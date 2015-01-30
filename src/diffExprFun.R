@@ -59,7 +59,10 @@ diffExprErrorCheck <- function(clinMat, dataMat, targetPheno=NA, covarVec=NA,
   }
   
   design <- model.matrix(~idx, data=clinMatTyped)    
-  design
+  # design
+  
+  itemsToReturn <- list(designMat=design, clinDF=clinMatDataFrame)
+  itemsToReturn
 }
 
 
