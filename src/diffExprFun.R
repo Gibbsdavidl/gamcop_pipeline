@@ -1,18 +1,4 @@
 
-fmfile <- "/Volumes/StorageDisk/Meth_DF5/pipeline/basis/2015_01_14_genomic_clinical_hilevel.fm"
-methfile <- "/Volumes/StorageDisk/Meth_DF5/pipeline/products/data_METH_20140109_norm_filtered_outlier_logit_admix_limma.fm"
-dataMat <- readFeatureMatrix(methfile)
-
-
-readFeatureMatrix <- function(pathToFM=NA)
-{
-  MatA <- read.delim(pathToFM, header=FALSE, stringsAsFactors=FALSE)
-  MatB <- MatA[-1,-1]
-  rownames(MatB) <- MatA[-1,1]
-  colnames(MatB) <- MatA[1,-1]
-  as.data.frame(MatB)
-}
-
 
 dataTyper <- function(type, dat) 
 {
