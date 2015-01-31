@@ -11,8 +11,8 @@ require(reshape2)|| stop("Could not load package 'reshape2'")
 # targetPheno - phenotype for comparison
 # FCThresh  - fold change threshold 
 # inputs passed from main function: dataMat, targetPheno, FCThresh, pValueThresh, writingDir
-visualize_diff_exp <- function(itemsToReturn, dataMat, topTable, topk=5, targetPheno, FCThresh, pValueThresh, writingDir){
-  clinMat <- itemsToReturn[[2]]
+
+visualize_diff_exp <- function(clinMat, dataMat, topTable, topk=5, targetPheno, FCThresh, pValueThresh, writingDir){
   phenotypeOfInterest <- unlist(str_split(targetPheno, ":"))[[5]]
   dataType <- unlist(str_split(targetPheno, ":"))[[1]]
   dataSource <- unlist(str_split(targetPheno, ":"))[[1]]
@@ -23,7 +23,7 @@ visualize_diff_exp <- function(itemsToReturn, dataMat, topTable, topk=5, targetP
   # Only plot things if you actually have differences
   if(numDiffExp > 0){
     # Volcano plots
-    make_volcano_plot(topTable, dataSource, pValueThresh, FCThresh, phenotypeOfInterest)
+    make_volcano_plot(topTable, dataSource, pValueThresh, FCThresh, phenotypeOfInterest, writingDir)
     
     # Make boxplots of the top k expressed genes (defaults to 5)
     minTopFeatures <- min(numDiffExp, topk)

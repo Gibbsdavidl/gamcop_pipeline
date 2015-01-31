@@ -74,6 +74,7 @@ diffExprFun <- function(clinMat, dataMat, targetPheno=NA, covarVec=NA, FCThresh=
   # pValueThresh is a number between 0 and 1
   # the tables will be written to the current directory, and returned to pass on in the pipeline
   
+  # Check for Input Errors --------------------------------------------------
   errorCheckOutputs <- diffExprErrorCheck(clinMat, dataMat, targetPheno=NA, covarVec=NA, FCThresh=NA, pValueThresh=NA, writingDir=".")
   # design matrix
   design <- errorCheckOutputs[[1]]
@@ -84,9 +85,19 @@ diffExprFun <- function(clinMat, dataMat, targetPheno=NA, covarVec=NA, FCThresh=
     return(NA)
   }
   
+  # Differential expression analysis ----------------------------------------
   
+  topTable <- diffExpMeth<(design, dataMat, covarVec)
   
+  # Visualize results of differential expression analysis -------------------
   
-      
+  visualize_diff_exp(clinMatFiltered, dataMat, topTable, topk=5, targetPheno, FCThresh, pValueThresh, writingDir)
+        
 }
+
+
+
+
+
+
 

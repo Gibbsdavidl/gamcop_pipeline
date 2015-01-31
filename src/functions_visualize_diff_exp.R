@@ -40,12 +40,12 @@ makeNeatGraphs <- function(plotObj, xlab, ylab, newTitle){
 #   red: if they pass the 
 #   orange: if they pass the fold-change threshold 
 # output of limma is augmented with a column "Gene" with labels for points
-make_volcano_plot <- function(topTable, dataSource, pValueThresh, fcThreshold, comparisonName){
+make_volcano_plot <- function(topTable, dataSource, pValueThresh, fcThreshold, comparisonName, writingDir){
   # code source: https://gist.github.com/stephenturner/4a599dbf120f380d38e7#file-volcanoplot-r
   require(calibrate) || stop("Could not load package 'calibrate'")
   foldChangeLim <-  round(max(abs(range(topTable$logFC)))) + 0.5
   
-  filename <- add_date_tag(paste("results/volcano_plot", comparisonName, dataSource, sep = "_"), fileExtension = ".pdf")
+  filename <- add_date_tag(paste(writingDir, "/volcano_plot", comparisonName, dataSource, sep = "_"), fileExtension = ".pdf")
   pdf(file = filename , width = 8, height = 6)
   
   # Make a basic volcano plot
