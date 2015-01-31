@@ -87,7 +87,7 @@ diffExprFun <- function(clinMat, dataMat, targetPheno=NA, covarVec=NA, FCThresh=
   
   # Differential expression analysis ----------------------------------------
   
-  topTable <- diffExpMeth<(design, dataMat, covarVec)
+  topTable <- diffExpMeth(design, dataMat, covarVec)
   
   # Visualize results of differential expression analysis -------------------
   
