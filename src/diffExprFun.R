@@ -75,11 +75,16 @@ diffExprFun <- function(clinMat, dataMat, targetPheno=NA, covarVec=NA, FCThresh=
   # the tables will be written to the current directory, and returned to pass on in the pipeline
   
   errorCheckOutputs <- diffExprErrorCheck(clinMat, dataMat, targetPheno=NA, covarVec=NA, FCThresh=NA, pValueThresh=NA, writingDir=".")
+  # design matrix
   design <- errorCheckOutputs[[1]]
+  # clinical data matrix (samples with molecular data)
+  clinMatFiltered <- errorCheckOutputs[[2]]
   if (is.na(design)) {
     # error!
     return(NA)
   }
+  
+  
   
   
       
