@@ -8,7 +8,7 @@
 add_date_tag <- function(stringToTag, fileExtension){
   today <- Sys.Date()
   todayf <- format(today, format="%Y%m%d")
-  return(paste(stringToTag, todayf, sep = "", fileExtension))
+  return(paste(stringToTag, "_",todayf, sep = "", fileExtension))
 }
 # Function to beautify ggplots in a generic way - changing background to black and white, axis labels and main titile for each figure
 makeNeatGraphs <- function(plotObj, xlab, ylab, newTitle){
