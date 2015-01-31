@@ -1,5 +1,4 @@
 
-
 dataTyper <- function(type, dat) 
 {
   if (type == "N") {
@@ -11,7 +10,6 @@ dataTyper <- function(type, dat)
   }
   return(dat)
 }
-
 
 diffExprErrorCheck <- function(clinMat, dataMat, targetPheno=NA, covarVec=NA, 
                                FCThresh=NA, pValueThresh=NA, writingDir=".")
@@ -65,7 +63,6 @@ diffExprErrorCheck <- function(clinMat, dataMat, targetPheno=NA, covarVec=NA,
   itemsToReturn
 }
 
-
 diffExprFun <- function(clinMat, dataMat, targetPheno=NA, covarVec=NA, FCThresh=NA, pValueThresh=NA, writingDir=".") 
 {
   # Assumes that:
@@ -77,11 +74,14 @@ diffExprFun <- function(clinMat, dataMat, targetPheno=NA, covarVec=NA, FCThresh=
   # pValueThresh is a number between 0 and 1
   # the tables will be written to the current directory, and returned to pass on in the pipeline
   
-  design <- diffExprErrorCheck(clinMat, dataMat, targetPheno=NA, covarVec=NA, FCThresh=NA, pValueThresh=NA, writingDir=".")
+  errorCheckOutputs <- diffExprErrorCheck(clinMat, dataMat, targetPheno=NA, covarVec=NA, FCThresh=NA, pValueThresh=NA, writingDir=".")
+  design <- errorCheckOutputs[[1]]
   if (is.na(design)) {
     # error!
     return(NA)
   }
+  
+  
       
 }
 

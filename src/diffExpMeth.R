@@ -1,7 +1,5 @@
-diffExpMeth<-function(itemsToReturn, dataMatrix, CovList, ...){
-  # NC inserted this :) hopefully it works
-  design <- itemsToReturn[[1]]
-  require(limma)
+diffExpMeth<-function(design, dataMatrix, CovList, ...){
+   require(limma)
   
   FixedDataMatrix<-dataMatrix[, colnames(dataMatrix) %in% rownames(design)]
   
