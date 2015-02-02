@@ -32,7 +32,7 @@ diffExprErrorCheck <- function(clinMat, dataMat, targetPheno=NA, covarVec=NA,
     print("diffExprFun Error: Please specify the target phenotype.")
     return(NA)
   }
-  if(!file.info(filename)[1,"isdir"]) {
+  if(file.info(filename)[1,"isdir"] != TRUE) {
     print("diffExprFun Error: This is a directory. Please specify a file name.")
     return(NA)
   }
