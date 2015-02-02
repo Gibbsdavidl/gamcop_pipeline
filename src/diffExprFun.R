@@ -12,7 +12,7 @@ dataTyper <- function(type, dat)
 }
 
 diffExprErrorCheck <- function(clinMat, dataMat, targetPheno=NA, covarVec=NA, 
-                               FCThresh=NA, pValueThresh=NA, filename=".")
+                               FCThresh=NA, pValueThresh=NA, writingDir=".")
 {
   require(stringr)
   require
@@ -32,7 +32,7 @@ diffExprErrorCheck <- function(clinMat, dataMat, targetPheno=NA, covarVec=NA,
     print("diffExprFun Error: Please specify the target phenotype.")
     return(NA)
   }
-  if(file.info(filename)[1,"isdir"]) {
+  if(!file.info(filename)[1,"isdir"]) {
     print("diffExprFun Error: This is a directory. Please specify a file name.")
     return(NA)
   }
@@ -63,7 +63,7 @@ diffExprErrorCheck <- function(clinMat, dataMat, targetPheno=NA, covarVec=NA,
   itemsToReturn
 }
 
-diffExprFun <- function(clinMat, dataMat, targetPheno=NA, covarVec=NA, FCThresh=NA, pValueThresh=NA, filename=".") 
+diffExprFun <- function(clinMat, dataMat, targetPheno=NA, covarVec=NA, FCThresh=NA, pValueThresh=NA, writingDir=".") 
 {
   # Assumes that:
   # clinMat and dataMat have the same column names, i.e. "101-479-M" .. R data.frame column names in are in place.
@@ -75,7 +75,7 @@ diffExprFun <- function(clinMat, dataMat, targetPheno=NA, covarVec=NA, FCThresh=
   # the tables will be written to the current directory, and returned to pass on in the pipeline
   
   # Check for Input Errors --------------------------------------------------
-  errorCheckOutputs <- diffExprErrorCheck(clinMat, dataMat, targetPheno, covarVec, FCThresh, pValueThresh, filename=".")
+  errorCheckOutputs <- diffExprErrorCheck(clinMat, dataMat, targetPheno, covarVec, FCThresh, pValueThresh, writingDir=".")
   # design matrix
   design <- errorCheckOutputs[[1]]
   # clinical data matrix (samples with molecular data)
@@ -91,7 +91,7 @@ diffExprFun <- function(clinMat, dataMat, targetPheno=NA, covarVec=NA, FCThresh=
   
   # Visualize results of differential expression analysis -------------------
   
-  visualize_diff_exp(clinMatFiltered, dataMat, topTable, topk=5, targetPheno, FCThresh, pValueThresh, filename)
+  visualize_diff_exp(clinMatFiltered, dataMat, topTable, topk=5, targetPheno, FCThresh, pValueThresh, writingDir)
         
 }
 
