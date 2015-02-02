@@ -45,7 +45,7 @@ make_volcano_plot <- function(topTable, dataSource, pValueThresh, fcThreshold, c
   require(calibrate) || stop("Could not load package 'calibrate'")
   foldChangeLim <-  round(max(abs(range(topTable$logFC)))) + 0.5
   
-  filename <- add_date_tag(paste((paste0(writingDir,"/", "volcano_plot"), comparisonName, dataSource, sep = "_"), fileExtension = ".pdf")
+  filename <- add_date_tag(paste(paste0(writingDir,"/", "volcano_plot"), comparisonName, dataSource, sep = "_"), fileExtension = ".pdf")
   pdf(file = filename , width = 8, height = 6)
   
   # Make a basic volcano plot
