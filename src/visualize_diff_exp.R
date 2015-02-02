@@ -1,7 +1,7 @@
 # Module to visualize the results of differential expression analysis
 # Author: Nyasha Chambwe
 # Date: 20150130
-source("scripts/gamcop_differential_expression_workflow/functions_visualize_diff_exp.R")
+source("src/functions_visualize_diff_exp.R")
 require(ggplot2) || stop("Could not load package 'ggplot2'")
 require(reshape2)|| stop("Could not load package 'reshape2'")
 require(stringr) || stop("Could not load package 'stringr'")
