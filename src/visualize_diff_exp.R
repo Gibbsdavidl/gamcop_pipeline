@@ -1,39 +1,41 @@
 # Module to visualize the results of differential expression analysis
 # Author: Nyasha Chambwe
 # Date: 20150130
-source("functions_visualize_diff_exp.R")
+source("scripts/gamcop_differential_expression_workflow/functions_visualize_diff_exp.R")
 require(ggplot2) || stop("Could not load package 'ggplot2'")
 require(reshape2)|| stop("Could not load package 'reshape2'")
-
+require(stringr) || stop("Could not load package 'stringr'")
 # Inputs
 # topTable - the full table that results from differential expression analysis
 # topK - how many top genes to make individual panels for
 # targetPheno - phenotype for comparison
 # FCThresh  - fold change threshold 
 # inputs passed from main function: dataMat, targetPheno, FCThresh, pValueThresh, writingDir
-
 visualize_diff_exp <- function(clinMat, dataMat, topTable, topk=5, targetPheno, FCThresh, pValueThresh, writingDir){
-  phenotypeOfInterest <- unlist(str_split(targetPheno, ":"))[[5]]
-  dataType <- unlist(str_split(targetPheno, ":"))[[1]]
-  dataSource <- unlist(str_split(targetPheno, ":"))[[1]]
+  # Human readable phenotype name
+  phenotypeName <- unlist(str_split(targetPheno, ":"))[[5]]
   diffExpTable <- topTable[topTable$adj.P.Val<=pValueThresh & abs(topTable$logFC>=FCThresh),]
   diffExpGenes <- row.names(diffExpTable)
   numDiffExp <- length(diffExpGenes)
   
-  # Only plot things if you actually have differences
+  # Only plot things if you actually have significant differences
   if(numDiffExp > 0){
+    dataSource <- unlist(str_split(diffExpGenes[[1]], ":"))[[3]]
+    # N/B/C?
+    phenotypeDataType <- unlist(str_split(targetPheno, ":"))[[1]]
+    
     # Volcano plots
-    make_volcano_plot(topTable, dataSource, pValueThresh, FCThresh, phenotypeOfInterest, writingDir)
+    make_volcano_plot(topTable, dataSource, pValueThresh, FCThresh, phenotypeOfInterest)
     
     # Make boxplots of the top k expressed genes (defaults to 5)
     minTopFeatures <- min(numDiffExp, topk)
     
     # Create ggplot2 input data
-    
-    #geneOfInterest <- diffExpGenes[1]
-    #geneExpressionLevel <- t(dataMat[geneOfInterest,])
-    #class_table <- t(clinMat[phenotypeOfInterest,])
-    #dat.obj <- nyMerge(class_table, expression_of_gene_of_interest)
+    geneOfInterest <- diffExpGenes[1]
+    geneExpressionLevel <- t(dataMat[geneOfInterest,])
+    classTable <- t(clinMat[targetPheno,])
+    dat.obj <- nyMerge(classTable, geneExpressionLevel)
+    expression_by_phenotype_boxplots(dat.obj, unlist(str_split(geneOfInterest, ":"))[[5]], phenotypeName, dataSource)
     
     # @TODO 
     # Plot heatmap
