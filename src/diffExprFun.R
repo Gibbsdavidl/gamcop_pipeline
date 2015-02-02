@@ -38,7 +38,7 @@ diffExprErrorCheck <- function(clinMat, dataMat, targetPheno=NA, covarVec=NA,
   }
   ms <- colnames(dataMat)
   ms <- str_sub(ms, 1,7)     ########## compare the first 7 chars "101-474" ##########
-  idx <- c(covarList, targetPheno)
+  idx <- c(covarVec, targetPheno)
   ns <- str_sub(colnames(clinMat), 1,7)
   clinMatDataFrame <- t(clinMat[idx, ns %in% ms])
   
