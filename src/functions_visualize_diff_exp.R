@@ -45,7 +45,7 @@ make_volcano_plot <- function(topTable, dataSource, pValueThresh, fcThreshold, c
   require(calibrate) || stop("Could not load package 'calibrate'")
   foldChangeLim <-  round(max(abs(range(topTable$logFC)))) + 0.5
   
-  filename <- add_date_tag(paste("results/volcano_plot", comparisonName, dataSource, sep = "_"), fileExtension = ".pdf")
+  filename <- add_date_tag(paste((paste0(writingDir,"/", "volcano_plot"), comparisonName, dataSource, sep = "_"), fileExtension = ".pdf")
   pdf(file = filename , width = 8, height = 6)
   
   # Make a basic volcano plot
@@ -72,7 +72,7 @@ make_volcano_plot <- function(topTable, dataSource, pValueThresh, fcThreshold, c
 # Gene level box plots ----------------------------------------------------
 # Boxplots for a given gene
 # phenotype must be a factor
-expression_by_phenotype_boxplots <- function(dat, gene, pheno, dataSource){
+expression_by_phenotype_boxplots <- function(dat, gene, pheno, dataSource, writingDir){
   names(dat) <- c("PhenotypeClass", "Expression")
   plot.obj <- ggplot(dat, aes(x = PhenotypeClass, y=Expression, fill=PhenotypeClass) )
   plot.obj <- plot.obj + geom_boxplot(width=0.5) 
@@ -82,7 +82,7 @@ expression_by_phenotype_boxplots <- function(dat, gene, pheno, dataSource){
     plot.obj <- makeNeatGraphs(plotObj = plot.obj, xlab = "", ylab="Log2 Normalized Methylation", newTitle = gene, pheno)
   }
   plot.obj <- plot.obj + labs(title=gene) + theme(axis.title.x = element_blank(), legend.position="top")  # Remove x-axis label
-  filename <- add_date_tag(paste("results/box_plot", dataSource, pheno, gene, sep="_"),fileExtension = ".pdf")
+  filename <- add_date_tag(paste(paste0(writingDir,"/" ,"box_plot"), dataSource, pheno, gene, sep="_"),fileExtension = ".pdf")
   pdf(file = filename , width = 8, height = 6)
   print(plot.obj)
   dev.off()
