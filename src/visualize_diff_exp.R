@@ -35,7 +35,7 @@ visualize_diff_exp <- function(clinMat, dataMat, topTable, topk=5, targetPheno, 
     geneExpressionLevel <- t(dataMat[geneOfInterest,])
     classTable <- t(clinMat[targetPheno,])
     dat.obj <- nyMerge(classTable, geneExpressionLevel)
-    expression_by_phenotype_boxplots(dat.obj, unlist(str_split(geneOfInterest, ":"))[[5]], phenotypeName, dataSource)
+    expression_by_phenotype_boxplots(dat.obj, unlist(str_split(geneOfInterest, ":"))[[5]], phenotypeName, dataSource, writingDir)
     
     # @TODO 
     # Plot heatmap
