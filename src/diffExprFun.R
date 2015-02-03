@@ -50,20 +50,20 @@ diffExprErrorCheck <- function(clinMat, dataMat, targetPheno=NA, covarVec=NA,
   dataTypes <- str_sub(idx, 1,1)
   clinMatTyped <- as.data.frame(sapply(1:length(dataTypes), FUN=function(a) dataTyper(dataTypes[a], clinMatDataFrame[,a])))
   colnames(clinMatTyped) <- colnames(clinMatDataFrame)
-  
+  row.names(clinMatTyped) <- row.names(clinMatDataFrame)
   if(all(dim(clinMatTyped) != c(length(ms), length(dataTypes)))) {
     print("diffExprFun Error: clinMat formatting failed somehow..")
     return(NA)
   }
   
-  design <- model.matrix(~idx, data=clinMatTyped)    
+  design <- model.matrix(~., data=clinMatTyped)    
   # design
   
-  itemsToReturn <- list(designMat=design, clinDF=clinMatDataFrame)
+  itemsToReturn <- list(designMat=design, clinDF=clinMatTyped)
   itemsToReturn
 }
 
-diffExprFun <- function(clinMat, dataMat, targetPheno=NA, covarVec=NA, FCThresh=NA, pValueThresh=NA, writingDir=".") 
+diffExprFun <- function(clinMat, dataMat, targetPheno=NA, covarVec=NA, FCThresh=NA, pValueThresh=NA, writingDir="./") 
 {
   # Assumes that:
   # clinMat and dataMat have the same column names, i.e. "101-479-M" .. R data.frame column names in are in place.
@@ -75,7 +75,7 @@ diffExprFun <- function(clinMat, dataMat, targetPheno=NA, covarVec=NA, FCThresh=
   # the tables will be written to the current directory, and returned to pass on in the pipeline
   
   # Check for Input Errors --------------------------------------------------
-  errorCheckOutputs <- diffExprErrorCheck(clinMat, dataMat, targetPheno, covarVec, FCThresh, pValueThresh, writingDir=".")
+  errorCheckOutputs <- diffExprErrorCheck(clinMat, dataMat, targetPheno, covarVec, FCThresh, pValueThresh, writingDir="./")
   # design matrix
   design <- errorCheckOutputs[[1]]
   # clinical data matrix (samples with molecular data)
@@ -84,15 +84,18 @@ diffExprFun <- function(clinMat, dataMat, targetPheno=NA, covarVec=NA, FCThresh=
     # error!
     return(NA)
   }
-  
+  print("Completed: Input error check ")
   # Differential expression analysis ----------------------------------------
   
-  topTable <- diffExpMeth(design, dataMat, covarVec)
+  topTable <- diffExpMeth(design, dataMat, covarVec, writingDir)
+  print("Completed: Differential expression testing ")
   
   # Visualize results of differential expression analysis -------------------
   
   visualize_diff_exp(clinMatFiltered, dataMat, topTable, topk=5, targetPheno, FCThresh, pValueThresh, writingDir)
-        
+    
+  print("Completed: Visualization of differential expression test results ")
+  
 }
 
 

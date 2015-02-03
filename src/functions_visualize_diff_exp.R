@@ -10,6 +10,17 @@ add_date_tag <- function(stringToTag, fileExtension){
   todayf <- format(today, format="%Y%m%d")
   return(paste(stringToTag, "_", todayf, sep = "", fileExtension))
 }
+# very annoying everytime I try to merge df1, df2 by row names have to constantly replace the rownames
+# merge df1 and df2 and keep the rownames the same
+# only produce output for those rows that could be merged
+nyMerge <- function(df1, df2){
+  #stopifnot(is.data.frame(df1), is.data.frame(df2))
+  merged_df <- merge(df1, df2, by=0)
+  row.names(merged_df) <- merged_df$Row.names
+  merged_df <- merged_df[,-1]
+  return(merged_df)
+}
+
 # Function to beautify ggplots in a generic way - changing background to black and white, axis labels and main titile for each figure
 makeNeatGraphs <- function(plotObj, xlab, ylab, newTitle, legendTitle){
   
@@ -45,7 +56,8 @@ make_volcano_plot <- function(topTable, dataSource, pValueThresh, fcThreshold, c
   require(calibrate) || stop("Could not load package 'calibrate'")
   foldChangeLim <-  round(max(abs(range(topTable$logFC)))) + 0.5
   
-  filename <- add_date_tag(paste(paste0(writingDir,"/", "volcano_plot"), comparisonName, dataSource, sep = "_"), fileExtension = ".pdf")
+  ouputFileName <- paste0(writingDir,"volcano_plot", comparisonName, dataSource, sep = "_")
+  filename <- add_date_tag(ouputFileName, fileExtension = ".pdf")
   pdf(file = filename , width = 8, height = 6)
   
   # Make a basic volcano plot
@@ -74,6 +86,7 @@ make_volcano_plot <- function(topTable, dataSource, pValueThresh, fcThreshold, c
 # phenotype must be a factor
 expression_by_phenotype_boxplots <- function(dat, gene, pheno, dataSource, writingDir){
   names(dat) <- c("PhenotypeClass", "Expression")
+  dat$PhenotypeClass <- as.factor(dat$PhenotypeClass)
   plot.obj <- ggplot(dat, aes(x = PhenotypeClass, y=Expression, fill=PhenotypeClass) )
   plot.obj <- plot.obj + geom_boxplot(width=0.5) 
   if(dataSource=="RNASEQ" || dataSource=="MIRNA"){
