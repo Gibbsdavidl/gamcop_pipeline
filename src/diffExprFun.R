@@ -40,6 +40,12 @@ diffExprErrorCheck <- function(clinMat, dataMat, targetPheno=NA, covarVec=NA,
   ms <- str_sub(ms, 1,7)     ########## compare the first 7 chars "101-474" ##########
   idx <- c(covarVec, targetPheno)
   ns <- str_sub(colnames(clinMat), 1,7)
+
+  if(sum(idx %in% rownames(clinMat)) < length(idx)) {
+      print("diffExprFun Error: Row names not found in clinical matrix.")
+      return(NA)
+  }
+  
   clinMatDataFrame <- t(clinMat[idx, ns %in% ms])
   
   if (nrow(clinMatDataFrame) != length(ms)) {
@@ -87,7 +93,7 @@ diffExprFun <- function(clinMat, dataMat, targetPheno=NA, covarVec=NA, FCThresh=
   print("Completed: Input error check ")
   # Differential expression analysis ----------------------------------------
   
-  topTable <- diffExpMeth(design, dataMat, covarVec, writingDir)
+  topTable <- differential(design, dataMat, covarVec, writingDir)
   print("Completed: Differential expression testing ")
   
   # Visualize results of differential expression analysis -------------------

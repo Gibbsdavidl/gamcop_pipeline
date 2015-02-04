@@ -1,4 +1,4 @@
-diffExpMeth<-function(design, dataMat, covarVec, writingDir, ...){
+differential <- function(design, dataMat, covarVec, writingDir, ...){
    require(limma)
   
   FixedDataMatrix<-dataMat[, colnames(dataMat) %in% rownames(design)]
@@ -8,6 +8,7 @@ diffExpMeth<-function(design, dataMat, covarVec, writingDir, ...){
   OutputFile     = paste0("DE_", DataType)
   OutputFileName = add_date_tag(OutputFile, ".txt")
   OutputFile_dir = paste0(writingDir, OutputFileName)
+
   # make sure that the samples are the same in both the dataMatrix and design matrix
   CheckData<-table(colnames(FixedDataMatrix) %in% rownames(design))
   
