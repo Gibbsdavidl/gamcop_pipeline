@@ -5,7 +5,7 @@ differential <- function(design, dataMat, covarVec, writingDir, ...){
   
   #create file name for data output
   DataType       = strsplit(rownames(FixedDataMatrix)[1], split=":")[[1]][3]
-  OutputFile     = paste0("DE_", DataType)
+  OutputFile     = paste0("/DE_", DataType)
   OutputFileName = add_date_tag(OutputFile, ".txt")
   OutputFile_dir = paste0(writingDir, OutputFileName)
 

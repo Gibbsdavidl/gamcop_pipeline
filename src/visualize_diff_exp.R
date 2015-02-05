@@ -38,7 +38,7 @@ visualize_diff_exp <- function(clinMat, dataMat, topTable, topk=1, targetPheno, 
     phenotypeDataType <- unlist(str_split(targetPheno, ":"))[[1]]
     
     # Volcano plots
-    make_volcano_plot(topTable, dataSource, pValueThresh, FCThresh, phenotypeName)
+    make_volcano_plot(topTable, dataSource, pValueThresh, FCThresh, phenotypeName, writingDir)
     
     # Make boxplots of the top k expressed genes (defaults to 5)
     minTopFeatures <- min(numDiffExp, topk)

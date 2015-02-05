@@ -31,5 +31,5 @@ targetPhenotype <- "B:NB:CLIN:Critical_Phenotype:Preterm"
 
 diffExprFun(clinMat=clinMat, dataMat=methMat, targetPheno=targetPhenotype,
             covarVec=covariates, FCThresh=0.263, pValueThresh=0.05,
-            writingDir="/Volumes/StorageDisk/Meth_DF5/pipeline/DE/") 
+            writingDir="/Volumes/StorageDisk/Meth_DF5/pipeline/DE") 
 
