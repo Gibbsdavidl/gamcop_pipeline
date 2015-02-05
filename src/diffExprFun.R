@@ -15,7 +15,6 @@ diffExprErrorCheck <- function(clinMat, dataMat, targetPheno=NA, covarVec=NA,
                                FCThresh=NA, pValueThresh=NA, writingDir=".")
 {
   require(stringr)
-  require
   if (is.na(targetPheno)) {
     print("diffExprFun Error: Please specify the target phenotype.")
     return(NA)
