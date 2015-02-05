@@ -23,13 +23,14 @@ methMat <- readFeatureMatrix("products/data_METH_20140129_norm_filtered_outlier_
 
 covariates <- c("N:M:SURV:Data:Date_of_Birth__relative_to_Date_of_Birth", "C:M:ADMX:Data:Admix_80_Percent")
 targetPhenotype <- "B:NB:CLIN:Critical_Phenotype:Preterm"
-#"N:CLIN:Date_of_Blood_Collection__relative_to_Date_of_Birth:M::::"
 #targetPhenotype <- "N:NB:CLIN:Critical_Phenotype:TermCategory"
+#"N:CLIN:Date_of_Blood_Collection__relative_to_Date_of_Birth:M::::"
 #B:NB:CLIN:Critical_Phenotype:Preterm
 #N:NB:CLIN:Critical_Phenotype:TermCategory
 #N:NB:CLIN:Critical_Phenotype:Gestational_Age_at_Delivery
 
-diffExprFun(clinMat=clinMat, dataMat=methMat, targetPheno=targetPhenotype,
-            covarVec=covariates, FCThresh=0.263, pValueThresh=0.05,
-            writingDir="/Volumes/StorageDisk/Meth_DF5/pipeline/DE") 
+deTable <- diffExprFun(clinMat=clinMat, dataMat=methMat, targetPheno=targetPhenotype,
+              covarVec=covariates, FCThresh=0.2, pValueThresh=0.05,
+              writingDir="/Volumes/StorageDisk/Meth_DF5/pipeline/DE") 
+
 

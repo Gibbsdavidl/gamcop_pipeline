@@ -100,7 +100,7 @@ diffExprFun <- function(clinMat, dataMat, targetPheno=NA, covarVec=NA, FCThresh=
   visualize_diff_exp(clinMatFiltered, dataMat, topTable, topk=5, targetPheno, FCThresh, pValueThresh, writingDir)
     
   print("Completed: Visualization of differential expression test results ")
-  
+  return(topTable)
 }
 
 

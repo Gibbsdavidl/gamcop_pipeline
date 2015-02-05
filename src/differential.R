@@ -5,10 +5,13 @@ differential <- function(design, dataMat, covarVec, writingDir, ...){
   
   #create file name for data output
   DataType       = strsplit(rownames(FixedDataMatrix)[1], split=":")[[1]][3]
-  OutputFile     = paste0("/DE_", DataType)
+  targetPheno <- unlist(str_split(colnames(design)[ncol(design)], ":"))[[5]]  # last col of design
+  targetPheno <- str_replace_all(string = targetPheno, pattern = "`", replacement = "")
+  print(targetPheno)
+  OutputFile     = paste0("/DE_", DataType, "_", targetPheno)
   OutputFileName = add_date_tag(OutputFile, ".txt")
   OutputFile_dir = paste0(writingDir, OutputFileName)
-
+  
   # make sure that the samples are the same in both the dataMatrix and design matrix
   CheckData<-table(colnames(FixedDataMatrix) %in% rownames(design))
   
