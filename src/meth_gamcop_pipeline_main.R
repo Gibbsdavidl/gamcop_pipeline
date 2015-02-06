@@ -33,4 +33,6 @@ deTable <- diffExprFun(clinMat=clinMat, dataMat=methMat, targetPheno=targetPheno
               covarVec=covariates, FCThresh=0.2, pValueThresh=0.05,
               writingDir="/Volumes/StorageDisk/Meth_DF5/pipeline/DE") 
 
+geneTable <- mapToGenes(deTable = deTable, 0.05)
+
 
