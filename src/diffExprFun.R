@@ -47,10 +47,10 @@ diffExprErrorCheck <- function(clinMat, dataMat, targetPheno=NA, covarVec=NA,
   
   clinMatDataFrame <- t(clinMat[idx, ns %in% ms])
   
-  if (nrow(clinMatDataFrame) != length(ms)) {
-    print("diffExprFun Error: nrow of clinMatSubset doesn't equal the number of samples.")
-    return()
-  }
+  #if (nrow(clinMatDataFrame) != length(ms)) {
+  #  print("diffExprFun Error: nrow of clinMatSubset doesn't equal the number of samples.")
+  #  return()
+  #}
     
   dataTypes <- str_sub(idx, 1,1)
   clinMatTyped <- as.data.frame(sapply(1:length(dataTypes), FUN=function(a) dataTyper(dataTypes[a], clinMatDataFrame[,a])))
