@@ -21,13 +21,13 @@ data_subset_Clin<-function(Mol.dat.frame, Clin.dat.frame, clin.rowname, traits){
     #traits        = vector of matching items wanted (e.g. blood draw date ranges from -31  to 309 days. To get days 1 and 2, 
     # make a vector of traits = c(1,2) )
  
-  nm  = row.names(Clin.dat) %in% clin.rowname
+  nm  = row.names(Clin.dat.frame) %in% clin.rowname
   if (sum(nm) ==0){
     print("data_subset_Clin error: No Matching Clinical Trait")
     return(NA)
   }
   
-  desired_trait  = t(Clin.dat[ nm,])
+  desired_trait  = t(Clin.dat.frame[ nm,])
   desired_trait = data.frame(desired_trait)
   
   names(desired_trait) = "Trait"
@@ -47,6 +47,6 @@ data_subset_Clin<-function(Mol.dat.frame, Clin.dat.frame, clin.rowname, traits){
     print("data_subset_Clin error: No data to subset")
     return(NA)
   }
-    dat.frame.new<-(dat.frame[,(colnames(dat.frame) %in% rownames(desired_trait))])
+    dat.frame.new<-(Mol.dat.frame[,(colnames(Mol.dat.frame) %in% rownames(desired_trait))])
     return(dat.frame.new)
 }
