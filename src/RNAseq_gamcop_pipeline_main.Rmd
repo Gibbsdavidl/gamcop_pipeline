@@ -1,0 +1,58 @@
+---
+title: "RNASeq Gamcop Molecular Pipeline"
+author: "Crystal"
+date: "February 6, 2015"
+output: html_document
+---
+
+This is an R Markdown document to demonstrate how to run the GAMPCOP molecular pipeline on the RNASeq data:
+
+```{r}
+# source the files necessary for the pipleline
+# Developed in collaboration between Crystal Humphries, Dave Gibbs and Nyasha Chambwe
+source("src/diffExprFun.R")
+source("src/diffExpMeth.R")
+source("src/readFeatureMatrix.R")
+source("src/functions_visualize_diff_exp.R")
+source("src/visualize_diff_exp.R")
+```
+
+Once this is performed, source the clinical and the batch corrected, normalized RNAseq data
+
+```{r, echo=FALSE}
+Clin.dat<-read.delim("../Feature Matrices/data_CLIN_20150203.fm", row.names=1, header=T)
+mol.RNAseq<-read.delim("../Feature Matrices/data_RNASeq_outliers_removed_normalized_GenesWithCountsAbove2_batchCorrected.fm", row.names=1, header=T)
+
+colnames(Clin.dat)<-cor_colnames(Clin.dat)
+colnames(mol.RNAseq)<-cor_colnames(mol.RNAseq)
+
+#to only examine samples with a particular trait (e.g. blood draw)
+traits<-c(seq(0,4))
+subset_row<-"N:M:CLIN:Data:Date_of_Blood_Collection__relative_to_Date_of_Birth"
+mol.RNAseq_BloodDraw<-data_subset_Clin(Mol.dat.frame = mol.RNAseq, Clin.dat.frame = Clin.dat, clin.rowname = subset_row, traits = traits)
+
+## choose variables for pipelines
+covariates = c("C:F:ADMX:Data:Admix_80_Percent","N:F:SURV:Data:Date_of_Birth__relative_to_Date_of_Birth") 
+
+#target phenotype (all twelve are below)
+targetPhenotype <- "B:NB:CLIN:Critical_Phenotype:Preterm"
+
+#B:NB:CLIN:Critical_Phenotype:1n2v4
+#B:NB:CLIN:Critical_Phenotype:1v4
+#N:NB:CLIN:Critical_Phenotype:Gestational_Age_at_Delivery
+#B:NB:MRGE:Critical_Phenotype:History_of_Preterm_Birth
+#B:NB:MRGE:Critical_Phenotype:Hypertension_Related
+#B:NB:MRGE:Critical_Phenotype:Immune_Related
+#B:M:CLIN:Critical_Phenotype:Incompetent_Shortened_Cervix
+#B:M:CLIN:Critical_Phenotype:Inova_Idiopathic_NA
+#B:M:CLIN:Critical_Phenotype:Preeclampsia/Eclampsia
+#B:NB:CLIN:Critical_Phenotype:Preterm
+#N:NB:CLIN:Critical_Phenotype:TermCategory
+#B:NB:MRGE:Critical_Phenotype:Uterine_Related
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+```{r, echo=FALSE}
+#run pipeline
+diffExprFun(clinMat = Clin.dat, dataMat= mol.RNAseq, targetPheno=targetPhenotype, covarVec=covariates,FCThresh=0.05, pValueThresh=0.5, writingDir="/Users/chumphri/Projects/RNAseq/Gamcop_output/") 
+```
