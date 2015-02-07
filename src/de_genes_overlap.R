@@ -1,8 +1,8 @@
 # Module to compare the overlap of differentially expressed/methylated genes either with each other or with curated gene sets
 # Author: Nyasha Chambwe
 # Date: 02/06/2015
-source("make_venn_diagram.R")
-source("gene_list_overlap.R")
+source("../src/draw_venn_diagram.R")
+source("../src/gene_list_overlap.R")
 
 add_date_tag <- function(stringToTag, fileExtension){
   today <- Sys.Date()
@@ -25,6 +25,7 @@ get_de_genes_overlap <- function(rna, mir, meth, geneList, targetPhenotypeName, 
                                                           NULL, species="hg19.gene"))
     overlapStats[nrow(overlapStats)+1,] <- c(comparisonName, length(listOfItemsToCompare[[1]]), length(listOfItemsToCompare[[2]]), inCommon, pval)
     filename <- add_date_tag(paste("overlap_venn", targetPhenotypeName, names(listOfItemsToCompare)[1], names(listOfItemsToCompare)[2], sep = "_"), ".tiff")
+    filename <- paste0(writingDir, filename)
     draw_venn_diagram(listOfItemsToCompare, filename)
     return(overlapStats)
   }

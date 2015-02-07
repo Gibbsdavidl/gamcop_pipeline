@@ -1,0 +1,39 @@
+---
+title: "Overlap of Differentially Expressed or Methylated Genes"
+output: pdf_document
+---
+Summary report
+
+```{r setup, echo=FALSE, message=FALSE, warning=FALSE, cache=FALSE}
+require(knitr)
+require(xtable)
+opts_chunk$set(echo = FALSE, message=FALSE, warning=FALSE, cache=FALSE, results='markup')
+source(file = "../src/de_genes_overlap.R")
+writingDir <- "~/Downloads/"
+```
+
+##Comparison: Trait A vs. Trait B
+
+```{r loadDiffExpGeneLists}
+
+targetPhenotypeName <- "Trait_of_Interest"
+
+# Inputs must be character vectors/factors
+deGenesRNA <- read.table("../test-data/differential-expression-genelist/diff-exp-genelist.txt")
+deGenesRNA <- deGenesRNA[,1]
+
+deGenesMiRNA <- read.table("../test-data/differential-expression-genelist/targets-diffExp-mirs.txt")
+deGenesMiRNA <- deGenesMiRNA[,1]
+
+deGenesMeth <- read.table("../test-data/differential-expression-genelist/diff-meth-genelist.txt")
+deGenesMeth <- deGenesMeth[,1]
+  
+pathwayList <- read.table("../test-data/differential-expression-genelist/genelist-pathways.txt", header=T, sep="\t")
+geneList <- pathwayList$Gene
+```
+
+```{r overlapAnalysis, echo=FALSE, results='asis'}
+# Returns summary of gene overlaps
+res <- xtable(get_de_genes_overlap(deGenesRNA, deGenesMiRNA, deGenesMeth, geneList, targetPhenotypeName, writingDir))
+print(res,  include.rownames=FALSE, type="latex", comment=FALSE)
+```
