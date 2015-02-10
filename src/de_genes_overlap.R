@@ -26,11 +26,8 @@ get_de_genes_overlap <- function(rna, mir, meth, geneList, targetPhenotypeName, 
                                                           NULL, species="hg19.gene"))
     overlapStats[nrow(overlapStats)+1,] <- c(comparisonName, length(listOfItemsToCompare[[1]]), length(listOfItemsToCompare[[2]]), inCommon, pval)
     root <- paste("overlap_venn", targetPhenotypeName, names(listOfItemsToCompare)[1], names(listOfItemsToCompare)[2], sep = "_")
-    print(root)
     filename <- add_date_tag(root, ".tiff")
-    print(filename)
     filename_path <- paste0(writingDir, filename)
-    print(filename_path)
     draw_venn_diagram(listOfItemsToCompare, filename_path)
     return(overlapStats)
   }
