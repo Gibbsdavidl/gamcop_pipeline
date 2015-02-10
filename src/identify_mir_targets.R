@@ -27,15 +27,17 @@ get_validated_mir_targets <- function(mirOfInterest, targetPhenotypeName, writin
     print(paste0("Searching for mRNA targets of ", mirOfInterest))
     table <- get.multimir(mirna=mirOfInterest, summary=TRUE)
     uniqueTargets <- unique(table$validated$target_symbol) 
-    print(paste0("Found ", length(uniqueTargets), " unique and validated targets for", mirOfInterest))
+    print(paste0("Found ", length(uniqueTargets), " unique and validated targets for ", mirOfInterest))
     return(uniqueTargets)
   }
   
-  listOfTargetGenes <- sapply(mirs, function(x) get_targets(x))
-  setOfTargetGenes <- unlist(x =listOfTargetGenes, use.names = F)
-  
+  listOfTargetGenes <- vector()
+  for(mir in mirs){
+    targets <- as.vector(get_targets(mir))
+    listOfTargetGenes <- c(listOfTargetGenes, targets)
+  }
   root <- add_date_tag(paste0("diffExp_miRNA_target_genelist_", targetPhenotypeName), ".txt")
   filename <- paste0(writingDir, root)
-  write.table(x = setOfTargetGenes, file = filename, quote = F, row.names = F, col.names = F)
-  
+  write.table(x = unique(listOfTargetGenes), file = filename, quote = F, row.names = F, col.names = F)
+  return(listOfTargetGenes)  
 }

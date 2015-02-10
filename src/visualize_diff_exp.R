@@ -16,18 +16,17 @@ nyMerge <- function(df1, df2){
   return(merged_df)
 }
 
-
-
 # Inputs
 # topTable - the full table that results from differential expression analysis
 # topK - how many top genes to make individual panels for
 # targetPheno - phenotype for comparison
 # FCThresh  - fold change threshold 
 # inputs passed from main function: dataMat, targetPheno, FCThresh, pValueThresh, writingDir
-visualize_diff_exp <- function(clinMat, dataMat, topTable, topk=1, targetPheno, FCThresh, pValueThresh, writingDir){
+visualize_diff_exp <- function(clinMat, dataMat, topTable, topk=1, targetPheno, 
+                               FCThresh, pValueThresh, writingDir){
   # Human readable phenotype name
   phenotypeName <- unlist(str_split(targetPheno, ":"))[[5]]
-  diffExpTable <- topTable[topTable$adj.P.Val<=pValueThresh & abs(topTable$logFC>=FCThresh),]
+  diffExpTable <- topTable[topTable$adj.P.Val<=pValueThresh & abs(topTable$logFC)>=FCThresh,]
   diffExpGenes <- row.names(diffExpTable)
   numDiffExp <- length(diffExpGenes)
   print(paste("The number of differentially expressed genes is: ", numDiffExp))
@@ -57,7 +56,6 @@ visualize_diff_exp <- function(clinMat, dataMat, topTable, topk=1, targetPheno, 
     # if(dataSource=="METH", dataSource=="RNASEQ", dataSource=="MIRNA"
     # print(paste(dataSource, "is not a valid data type for this analysis!", sep = " "))
   } else {
-    print("There are no signficant differentially expressed/methylated genes for the selected P value 
-          and fold change thresholds") 
+    print("There are no signficant differentially expressed/methylated genes for the selected P value and fold change thresholds") 
   }
 }

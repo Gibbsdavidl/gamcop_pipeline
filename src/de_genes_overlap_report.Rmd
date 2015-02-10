@@ -9,17 +9,18 @@ require(knitr)
 require(xtable)
 opts_chunk$set(echo = FALSE, message=FALSE, warning=FALSE, cache=FALSE, results='markup')
 source(file = "../src/de_genes_overlap.R")
-writingDir <- "~/Downloads/"
+writingDir <- "results/diffExpAnalysis/20150209/combined_mol_dat_types/"
 ```
 
-##Comparison: Trait A vs. Trait B
-
+## Target Phenotype: Preterm 
+Compares differential express
+### All Samples 
 ```{r loadDiffExpGeneLists}
 
-targetPhenotypeName <- "Trait_of_Interest"
+targetPhenotypeName <- "Preterm"
 
 # Inputs must be character vectors/factors
-deGenesRNA <- read.table("../test-data/differential-expression-genelist/diff-exp-genelist.txt")
+deGenesRNA <- read.table("results/diffExpAnalysis//20150209//combined_mol_dat_types/DE_RNASeq_Preterm_all_20150209.txt")
 deGenesRNA <- deGenesRNA[,1]
 
 deGenesMiRNA <- read.table("../test-data/differential-expression-genelist/targets-diffExp-mirs.txt")
