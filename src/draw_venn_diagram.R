@@ -24,3 +24,4 @@ draw_venn_diagram <- function(listOfItems, filename){
                fill = colors[1:length(listOfItems)]
   )
 }
+
