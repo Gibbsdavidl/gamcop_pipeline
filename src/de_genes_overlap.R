@@ -1,8 +1,8 @@
 # Module to compare the overlap of differentially expressed/methylated genes either with each other or with curated gene sets
 # Author: Nyasha Chambwe
 # Date: 02/06/2015
-source("../src/draw_venn_diagram.R")
-source("../src/gene_list_overlap.R")
+source("../../../../src/draw_venn_diagram.R")
+source("../../../../src/gene_list_overlap.R")
 
 add_date_tag <- function(stringToTag, fileExtension){
   today <- Sys.Date()
@@ -13,20 +13,25 @@ add_date_tag <- function(stringToTag, fileExtension){
 # Arguements
 # targetPhenotype: Description of Target Phenotype for which genes are differentially expressed
 # rna: List of Differentially Expressed Genes : characterVector
-# mir: List of Differnetially Expressed miRs
+# mir: List of Differnetially Expressed miRs : characterVector
 # meth: List of Differnetially Methylated Genes
 # geneList: Any other list (dbPTB gene list)
 # writingDir: directory to write the results 
 get_de_genes_overlap <- function(rna, mir, meth, geneList, targetPhenotypeName, writingDir){
-  perform_overlap_analysis <- function(listOfItemsToCompare, overlapStats,targetPhenotypeName) {
+  
+  perform_overlap_analysis <- function(listOfItemsToCompare, overlapStats, targetPhenotypeName) {
     comparisonName <- paste(names(listOfItemsToCompare)[1], names(listOfItemsToCompare)[2], sep="_")
     inCommon <- get_list_overlap_size(listOfItemsToCompare[[1]], listOfItemsToCompare[[2]], NULL, species="hg19.gene")
     pval <- sprintf("%.2e", get_list_overlap_significance(listOfItemsToCompare[[1]], listOfItemsToCompare[[2]], 
                                                           NULL, species="hg19.gene"))
     overlapStats[nrow(overlapStats)+1,] <- c(comparisonName, length(listOfItemsToCompare[[1]]), length(listOfItemsToCompare[[2]]), inCommon, pval)
-    filename <- add_date_tag(paste("overlap_venn", targetPhenotypeName, names(listOfItemsToCompare)[1], names(listOfItemsToCompare)[2], sep = "_"), ".tiff")
-    filename <- paste0(writingDir, filename)
-    draw_venn_diagram(listOfItemsToCompare, filename)
+    root <- paste("overlap_venn", targetPhenotypeName, names(listOfItemsToCompare)[1], names(listOfItemsToCompare)[2], sep = "_")
+    print(root)
+    filename <- add_date_tag(root, ".tiff")
+    print(filename)
+    filename_path <- paste0(writingDir, filename)
+    print(filename_path)
+    draw_venn_diagram(listOfItemsToCompare, filename_path)
     return(overlapStats)
   }
   
@@ -34,14 +39,20 @@ get_de_genes_overlap <- function(rna, mir, meth, geneList, targetPhenotypeName, 
                               "Overlap Size" = integer(), "P-value"=integer(), stringsAsFactors=FALSE)
   
   # pairwise comparisons between molecular data types
+  if(!is.null(rna) & !is.null(mir)){
   compList <- list("mRNA_Expression"=rna, "miRNA_Targets"=mir )
-  resultsTable <- perform_overlap_analysis(compList, resultsTable, targetPhenotypeName)
+  resultsTable <- perform_overlap_analysis(compList, resultsTable, targetPhenotypeName = targetPhenotypeName)
+  }
   
+  if(!is.null(rna) & !is.null(meth)){
   compList <- list("mRNA_Expression"=rna, "Methylation"=meth )
   resultsTable <- perform_overlap_analysis(compList, resultsTable, targetPhenotypeName)
+  }
   
+  if(!is.null(meth) & !is.null(mir)){
   compList <- list("Methylation"=meth, "miRNA_Targets"=mir )
   resultsTable <- perform_overlap_analysis(compList, resultsTable, targetPhenotypeName)
+  }
   
   # pairwise comparisons between molecular data types and PTB Gene List
   compList <- list("mRNA_Expression"=rna, "GeneList"= geneList )
@@ -50,8 +61,10 @@ get_de_genes_overlap <- function(rna, mir, meth, geneList, targetPhenotypeName, 
   compList <- list("miRNA_Targets"=mir, "GeneList"= geneList)
   resultsTable <- perform_overlap_analysis(compList, resultsTable, targetPhenotypeName)
   
+  if(!is.null(meth)){
   compList <- list("Methylation"=meth, "GeneList"= geneList )
   resultsTable <- perform_overlap_analysis(compList, resultsTable, targetPhenotypeName)
+  }
   
   return(resultsTable)
 }

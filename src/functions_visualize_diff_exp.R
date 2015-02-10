@@ -89,7 +89,7 @@ expression_by_phenotype_boxplots <- function(dat, gene, pheno, dataSource, writi
   dat$PhenotypeClass <- as.factor(dat$PhenotypeClass)
   plot.obj <- ggplot(dat, aes(x = PhenotypeClass, y=Expression, fill=PhenotypeClass) )
   plot.obj <- plot.obj + geom_boxplot(width=0.5) 
-  if(dataSource=="RNASEQ" || dataSource=="MIRNA"){
+  if(dataSource=="RNASeq" || dataSource=="MIRNA"){
     plot.obj <- makeNeatGraphs(plotObj = plot.obj, xlab = "", ylab="Log2 Normalized Expression", newTitle = gene, pheno)
   } else{
     plot.obj <- makeNeatGraphs(plotObj = plot.obj, xlab = "", ylab="Log2 Normalized Methylation", newTitle = gene, pheno)
