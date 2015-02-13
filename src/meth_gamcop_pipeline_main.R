@@ -19,6 +19,7 @@ setwd("/Volumes/StorageDisk/Meth_DF5/pipeline")
 # Clinical data file
 clinMat <- readFeatureMatrix("basis/data_CLIN_20150203.fm")
 methMat <- readFeatureMatrix("products/data_METH_20140129_norm_filtered_outlier_logit_admix_limma.fm")
+# load("file="/Volumes//StorageDisk//Meth_DF5/pipeline/methmat_feb_9.rda")
 #batchMat <- read.csv("/Volumes/StorageDisk/Meth_DF5/pipeline/basis/DF5_Methylation_Batches.csv", stringsAsFactors=FALSE)
 #clinMat <- methAddBatch(clinMat, batchMat, "N:M:METH:Data:MethBatch")
 
@@ -81,6 +82,6 @@ for (outf in outputFiles) {
     print(hypergeomTest(diffExprGenes, dbPTB, universe))
   }
 }
-  
+
 #############################################################################################################################
 
