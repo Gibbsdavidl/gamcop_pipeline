@@ -1,4 +1,4 @@
-differential <- function(design, dataMat, covarVec, writingDir, ...){
+differential <- function(design, dataMat, covarVec, writingDir, FCThresh, pValueThresh,...){
    require(limma)
   
   FixedDataMatrix<-dataMat[, colnames(dataMat) %in% rownames(design)]
@@ -30,8 +30,10 @@ differential <- function(design, dataMat, covarVec, writingDir, ...){
     #Write and Return Table of DE/M variables and the corresponding statistics
     print(cov_length:DesignVariables)
     Complete_table<-topTable(fit1, n=Inf, coef= cov_length:DesignVariables)
+    ID_name<-paste0("N:M:",DataType, ":Data:")
+    Complete_table$GeneName <- gsub(ID_name, "", rownames(Complete_table))
     write.table(Complete_table, file=OutputFile_dir, quote = F, row.names = T, sep="\t")
-    return(head(Complete_table))
+    return(Complete_table)
   }
   
   else{
