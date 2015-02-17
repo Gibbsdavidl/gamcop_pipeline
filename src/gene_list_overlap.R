@@ -25,8 +25,9 @@ hypergeomTest <- function(genelist, otherlist, universe) {
   #k	 the number of balls drawn from the urn.
   
   x <- length(intersect(genelist, otherlist))  # sig and in pathway for example
-  cat("overlap size: ", x)
-  phyper(x, length(otherlist), (length(universe) - length(otherlist)), length(genelist), lower.tail = T)
+  
+  pval <- phyper(x, length(otherlist), (length(universe) - length(otherlist)), length(genelist), lower.tail = T)
   # Numerical parameters in order:
   # (success-in-sample, success-in-bkgd, failure-in-bkgd, sample-size).
+ return(pval)
 }
