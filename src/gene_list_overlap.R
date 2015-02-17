@@ -17,7 +17,7 @@ get_list_overlap_size <- function(list1, list2, geneUniverse, species){
 
 hypergeomTest <- function(genelist, otherlist, universe) {
   # Each variable needs to be a character vector.
-  
+  stopifnot(is.character(genelist), is.character(otherlist), is.character(universe))
   #phyper(x,m,n,k)
   #x, vector of quantiles representing the number of white balls drawn without replacement from an urn which contains both black and white balls.
   #m   the number of white balls in the urn.
