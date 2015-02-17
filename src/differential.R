@@ -30,7 +30,7 @@ differential <- function(design, dataMat, covarVec, writingDir, ...){
     #Write and Return Table of DE/M variables and the corresponding statistics
     print(cov_length:DesignVariables)
     Complete_table<-topTable(fit1, n=Inf, coef= cov_length:DesignVariables)
-    write.table(Complete_table, file=OutputFile_dir, quote = F, row.names = T)
+    write.table(Complete_table, file=OutputFile_dir, quote = F, row.names = T, sep="\t")
     return(head(Complete_table))
   }
   
