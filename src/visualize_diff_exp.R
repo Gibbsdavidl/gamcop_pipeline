@@ -1,7 +1,7 @@
 # Module to visualize the results of differential expression analysis
 # Author: Nyasha Chambwe
 # Date: 20150130
-source("src/functions_visualize_diff_exp.R")
+#source("src/functions_visualize_diff_exp.R")
 require(ggplot2) || stop("Could not load package 'ggplot2'")
 require(reshape2)|| stop("Could not load package 'reshape2'")
 require(stringr) || stop("Could not load package 'stringr'")
@@ -26,6 +26,7 @@ visualize_diff_exp <- function(clinMat, dataMat, topTable, topk=1, targetPheno,
                                FCThresh, pValueThresh, writingDir){
   # Human readable phenotype name
   phenotypeName <- unlist(str_split(targetPheno, ":"))[[5]]
+  phenotypeName <- gsub("/", "_", phenotypeName)
   diffExpTable <- topTable[topTable$adj.P.Val<=pValueThresh & abs(topTable$logFC)>=FCThresh,]
   diffExpGenes <- row.names(diffExpTable)
   numDiffExp <- length(diffExpGenes)
