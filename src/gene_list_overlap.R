@@ -25,9 +25,11 @@ hypergeomTest <- function(genelist, otherlist, universe) {
   #k	 the number of balls drawn from the urn.
   
   x <- length(intersect(genelist, otherlist))  # sig and in pathway for example
+
+  # Source: http://stats.stackexchange.com/questions/16247/calculating-the-probability-of-gene-list-overlap-between-an-rna-seq-and-a-chip-c
+  pval <- phyper(x-1, length(otherlist), (length(universe) - length(otherlist)), length(genelist), lower.tail = F)
   
-  pval <- phyper(x, length(otherlist), (length(universe) - length(otherlist)), length(genelist), lower.tail = T)
   # Numerical parameters in order:
   # (success-in-sample, success-in-bkgd, failure-in-bkgd, sample-size).
- return(pval)
+  return(pval)
 }
