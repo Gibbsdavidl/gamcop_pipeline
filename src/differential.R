@@ -1,4 +1,4 @@
-differential <- function(design, dataMat, covarVec, writingDir, ...){
+differential <- function(design, dataMat, covarVec, writingDir, FCThresh, pValueThresh,...){
    require(limma)
   
   FixedDataMatrix<-dataMat[, colnames(dataMat) %in% rownames(design)]
@@ -7,6 +7,7 @@ differential <- function(design, dataMat, covarVec, writingDir, ...){
   DataType       = strsplit(rownames(FixedDataMatrix)[1], split=":")[[1]][3]
   targetPheno <- unlist(str_split(colnames(design)[ncol(design)], ":"))[[5]]  # last col of design
   targetPheno <- str_replace_all(string = targetPheno, pattern = "`", replacement = "")
+  targetPheno <- gsub("/","_", targetPheno)
   print(targetPheno)
   OutputFile     = paste0("/DE_", DataType, "_", targetPheno)
   OutputFileName = add_date_tag(OutputFile, ".txt")
@@ -29,7 +30,9 @@ differential <- function(design, dataMat, covarVec, writingDir, ...){
     #Write and Return Table of DE/M variables and the corresponding statistics
     print(cov_length:DesignVariables)
     Complete_table<-topTable(fit1, n=Inf, coef= cov_length:DesignVariables)
-    write.table(Complete_table, file=OutputFile_dir, quote = F, row.names = T)
+    ID_name<-paste0("N:M:",DataType, ":Data:")
+    Complete_table$GeneName <- gsub(ID_name, "", rownames(Complete_table))
+    write.table(Complete_table, file=OutputFile_dir, quote = F, row.names = T, sep="\t")
     return(Complete_table)
   }
   
