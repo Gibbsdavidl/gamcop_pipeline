@@ -32,23 +32,24 @@ subset_row<-"N:M:CLIN:Data:Date_of_Blood_Collection__relative_to_Date_of_Birth"
 mol.RNAseq_BloodDraw<-data_subset_Clin(Mol.dat.frame = mol.RNAseq, Clin.dat.frame = Clin.dat, clin.rowname = subset_row, traits = traits)
 
 ## choose variables for pipelines
-covariates = c("C:F:ADMX:Data:Admix_80_Percent","N:F:SURV:Data:Date_of_Birth__relative_to_Date_of_Birth") 
+covariates = c("C:F:ADMX:Data:Admix_80_Percent","N:F:SURV:Data:Date_of_Birth__relative_to_Date_of_Birth", "N:M:CLIN:Data:Date_of_Blood_Collection__relative_to_Date_of_Birth") 
 
 #target phenotype (all twelve are below)
+targetPhenotype <- "N:NB:CLIN:Critical_Phenotype:TermCategory"
 targetPhenotype <- "B:NB:CLIN:Critical_Phenotype:Preterm"
-
-#B:NB:CLIN:Critical_Phenotype:1n2v4
-#B:NB:CLIN:Critical_Phenotype:1v4
-#N:NB:CLIN:Critical_Phenotype:Gestational_Age_at_Delivery
-#B:NB:MRGE:Critical_Phenotype:History_of_Preterm_Birth
-#B:NB:MRGE:Critical_Phenotype:Hypertension_Related
-#B:NB:MRGE:Critical_Phenotype:Immune_Related
-#B:M:CLIN:Critical_Phenotype:Incompetent_Shortened_Cervix
-#B:M:CLIN:Critical_Phenotype:Inova_Idiopathic_NA
-#B:M:CLIN:Critical_Phenotype:Preeclampsia/Eclampsia
-#B:NB:CLIN:Critical_Phenotype:Preterm
-#N:NB:CLIN:Critical_Phenotype:TermCategory
-#B:NB:MRGE:Critical_Phenotype:Uterine_Related
+  
+targets<-c("B:NB:CLIN:Critical_Phenotype:1n2v4",
+"B:NB:CLIN:Critical_Phenotype:1v4",
+"N:NB:CLIN:Critical_Phenotype:Gestational_Age_at_Delivery",
+"B:NB:MRGE:Critical_Phenotype:History_of_Preterm_Birth",
+"B:NB:MRGE:Critical_Phenotype:Hypertension_Related",
+"B:NB:MRGE:Critical_Phenotype:Immune_Related",
+"B:M:CLIN:Critical_Phenotype:Incompetent_Shortened_Cervix",
+"B:M:CLIN:Critical_Phenotype:Inova_Idiopathic_NA",
+"B:M:CLIN:Critical_Phenotype:Preeclampsia/Eclampsia",
+"B:NB:CLIN:Critical_Phenotype:Preterm",
+"N:NB:CLIN:Critical_Phenotype:TermCategory",
+"B:NB:MRGE:Critical_Phenotype:Uterine_Related")
 ```
 
 Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
