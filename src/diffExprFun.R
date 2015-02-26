@@ -82,17 +82,17 @@ diffExprFun <- function(clinMat, dataMat, targetPheno=NA, covarVec=NA, FCThresh=
   # Check for Input Errors --------------------------------------------------
   errorCheckOutputs <- diffExprErrorCheck(clinMat, dataMat, targetPheno, covarVec, FCThresh, pValueThresh, writingDir)
   # design matrix
-  design <- errorCheckOutputs[[1]]
+  designTable <- errorCheckOutputs[[1]]
   # clinical data matrix (samples with molecular data)
   clinMatFiltered <- errorCheckOutputs[[2]]
-  if (is.na(design)) {
+  if (is.na(designTable)) {
     # error!
     return(NA)
   }
   print("Completed: Input error check ")
   # Differential expression analysis ----------------------------------------
   
-  topTable <- differential(design, dataMat, covarVec, writingDir)
+  topTable <- differential(designTable, dataMat, covarVec, writingDir)
   print("Completed: Differential expression testing ")
   
   # Visualize results of differential expression analysis -------------------
@@ -104,7 +104,9 @@ diffExprFun <- function(clinMat, dataMat, targetPheno=NA, covarVec=NA, FCThresh=
 }
 
 
-bootDiffFun <- function(clinMat, dataMat, targetPheno=NA, covarVec=NA, FCThresh=NA, pValueThresh=NA, writingDir="./") 
+bootDiffFun <- function(clinMat, dataMat, targetPheno=NA, covarVec=NA, 
+                        FCThresh=NA, pValueThresh=NA, writingDir="./", 
+                        reps=100, cpus=2)
 {
   # Assumes that:
   # clinMat and dataMat have the same column names, i.e. "101-479-M" .. R data.frame column names in are in place.
@@ -118,10 +120,10 @@ bootDiffFun <- function(clinMat, dataMat, targetPheno=NA, covarVec=NA, FCThresh=
   # Check for Input Errors --------------------------------------------------
   errorCheckOutputs <- diffExprErrorCheck(clinMat, dataMat, targetPheno, covarVec, FCThresh, pValueThresh, writingDir)
   # design matrix
-  design <- errorCheckOutputs[[1]]
+  designTable <- errorCheckOutputs[[1]]
   # clinical data matrix (samples with molecular data)
   clinMatFiltered <- errorCheckOutputs[[2]]
-  if (is.na(design)) {
+  if (is.na(designTable)) {
     # error!
     return(NA)
   }
@@ -129,7 +131,7 @@ bootDiffFun <- function(clinMat, dataMat, targetPheno=NA, covarVec=NA, FCThresh=
   # Differential expression analysis ----------------------------------------
   
 #  topTable <- differential(design, dataMat, covarVec, writingDir)
-  topTable <- bootDiff(design, dataMat, covarVec, writingDir, 3, 100, 4)
+  topTable <- bootDiff(designTable, dataMat, covarVec, writingDir, 5, reps, cpus)
   print("Completed: Differential expression testing ")
   
   # Visualize results of differential expression analysis -------------------

@@ -30,12 +30,12 @@ rownames(clinMat)[idx] <- "B:M:CLIN:Critical_Phenotype:Preeclampsia_Eclampsia"
 bloodDrawDates <- as.numeric(clinMat["N:M:CLIN:Data:Date_of_Blood_Collection__relative_to_Date_of_Birth", ])
 #idx <- bloodDrawDates == 1
 #idx <- bloodDrawDates >= 0 & bloodDrawDates <= 4
-idx[is.na(idx)] <- F
-clinMat <- clinMat[,idx]
+#idx[is.na(idx)] <- F
+#clinMat <- clinMat[,idx]
 #######################################################################################################################
 
-covariates <- c("N:M:SURV:Data:Date_of_Birth__relative_to_Date_of_Birth", 
-                "C:M:ADMX:Data:Admix_80_Percent")
+#covariates <- c("N:M:SURV:Data:Date_of_Birth__relative_to_Date_of_Birth", 
+#                "C:M:ADMX:Data:Admix_80_Percent")
 
 covariates <- c("N:M:SURV:Data:Date_of_Birth__relative_to_Date_of_Birth", 
                 "C:M:ADMX:Data:Admix_80_Percent",
@@ -54,15 +54,33 @@ targets <- c(
 "B:M:CLIN:Critical_Phenotype:Preeclampsia_Eclampsia",
 "B:NB:MRGE:Critical_Phenotype:Uterine_Related")
 
-for (ta in targets) {
-  targetString <- str_split(ta, ":")[[1]][5]; print(targetString)
-  deTable <- diffExprFun(clinMat=clinMat, dataMat=methMat, targetPheno=ta,
-                covarVec=covariates, FCThresh=0.001, pValueThresh=0.05,
-                writingDir="/Volumes/StorageDisk/Meth_DF5/pipeline/DE_blood_all_days") 
-  geneTable <- mapToGenes(deTable = deTable, 1.010)
-  ddd <- cbind(deTable, geneTable)
-  foutstring <- str_join("/Volumes/StorageDisk/Meth_DF5/pipeline/DE_blood_all_days/", targetString, ".txt", collapse = "")
-  write.table(ddd, quote=F, file=foutstring, sep="\t")
+dirs <- c("/Volumes/StorageDisk/Meth_DF5/pipeline/DE_blood_all_days/",
+          "/Volumes/StorageDisk/Meth_DF5/pipeline/DE_blood_day_04/",
+          "/Volumes/StorageDisk/Meth_DF5/pipeline/DE_blood_day_1/")
+
+for (day in 1:3) {
+  if (day == 1) {
+    # then take them all 
+    idx <- bloodDrawDates > -100000
+  } else if (day == 2) {
+    idx <- bloodDrawDates == 1
+  } else if (day == 3) {
+    idx <- bloodDrawDates >= 0 & bloodDrawDates <= 4
+  }
+  idx[is.na(idx)] <- F
+  clinMatFilt <- clinMat[,idx]  
+  outdir <- dirs[day]
+  
+    for (ta in targets) {
+      targetString <- str_split(ta, ":")[[1]][5]; print(targetString)
+      deTable <- bootDiffFun(clinMat=clinMatFilt, dataMat=methMat, targetPheno=ta,
+                      covarVec=covariates, FCThresh=0.001, pValueThresh=0.05,
+                      writingDir=outdir, reps=200, cpus=6) 
+      geneTable <- mapToGenes(deTable = deTable, 1.010)
+      ddd <- cbind(deTable, geneTable)
+      foutstring <- str_join(outdir, targetString, ".txt", collapse = "")
+      write.table(ddd, quote=F, file=foutstring, sep="\t")
+  }
 }
 
 #############################################################################################################################
