@@ -1,7 +1,7 @@
 # Make sure gene symbols are approved HGNC symbols
 # Author: Nyasha Chambwe
 # Date:   20150226
-require(HGNChelper) || stop("Could not load package 'GeneOverlap'")
+require(HGNChelper) || stop("Could not load package 'HGNChelper'")
 
 # Input: character vector of gene names 
 # Returns character vector (same length as input vector) with HGNC approved gene names
