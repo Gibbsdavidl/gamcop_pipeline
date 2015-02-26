@@ -104,6 +104,42 @@ diffExprFun <- function(clinMat, dataMat, targetPheno=NA, covarVec=NA, FCThresh=
 }
 
 
+bootDiffFun <- function(clinMat, dataMat, targetPheno=NA, covarVec=NA, FCThresh=NA, pValueThresh=NA, writingDir="./") 
+{
+  # Assumes that:
+  # clinMat and dataMat have the same column names, i.e. "101-479-M" .. R data.frame column names in are in place.
+  # clinMat and datMat have rownames .... preprocessing will make sure the rowname column is eliminated.
+  # the target phenotype is a character string like "B:CLIN:Preterm:NB::::" 
+  # the covarVec is a vector of strings matching 1st-column-names in clinMat
+  # FCthresh is a number like 1.2
+  # pValueThresh is a number between 0 and 1
+  # the tables will be written to the current directory, and returned to pass on in the pipeline
+  
+  # Check for Input Errors --------------------------------------------------
+  errorCheckOutputs <- diffExprErrorCheck(clinMat, dataMat, targetPheno, covarVec, FCThresh, pValueThresh, writingDir)
+  # design matrix
+  design <- errorCheckOutputs[[1]]
+  # clinical data matrix (samples with molecular data)
+  clinMatFiltered <- errorCheckOutputs[[2]]
+  if (is.na(design)) {
+    # error!
+    return(NA)
+  }
+  print("Completed: Input error check ")
+  # Differential expression analysis ----------------------------------------
+  
+#  topTable <- differential(design, dataMat, covarVec, writingDir)
+  topTable <- bootDiff(design, dataMat, covarVec, writingDir, 3, 100, 4)
+  print("Completed: Differential expression testing ")
+  
+  # Visualize results of differential expression analysis -------------------
+  
+  visualize_diff_exp(clinMatFiltered, dataMat, topTable, topk=5, targetPheno, FCThresh, pValueThresh, writingDir)
+  
+  print("Completed: Visualization of differential expression test results ")
+  return(topTable)
+}
+
 
 
 
