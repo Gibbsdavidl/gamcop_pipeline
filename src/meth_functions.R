@@ -67,13 +67,33 @@ mapToGenes <- function(deTable, pcut=0.05)
 {
   require(stringr)
   require("FDb.InfiniumMethylation.hg19")
+  require(org.Hs.eg.db)
   hm450 <- get450k()
   probenames <- rownames(deTable[deTable$adj.P.Val <= pcut,])
   probelist <- str_split(probenames, pattern = ":")
   probenames <- unlist(lapply(probelist, function(a) a[5]))
   probes <- hm450[probenames]
   genes <- getNearestGene(probes)  
-  tab1 <- cbind(genes, as.data.frame(seqnames(probes)), data.frame(Pos=probes$probeStart))
+  
+  # clean up #
+  geneSymbols <- genes$nearestGeneSymbol
+  geneSymbols[is.na(geneSymbols)] <- "none"
+  geneSymbols[geneSymbols == ""] <- "none"
+  
+  # convert to entrez #
+  geneEntrez <- mget(org.Hs.egALIAS2EG, x=geneSymbols, ifnotfound=NA) 
+  geneEntrez <- unlist(lapply(geneEntrez, function(a) {
+    if (length(a) > 1) {
+      str_join(a, collapse=";")
+    } else {
+      if (is.na(a)) {
+        "NA"
+      } else {
+        a
+      }
+    }
+  }))
+  tab1 <- cbind(genes, as.data.frame(seqnames(probes)), data.frame(Pos=probes$probeStart, Entrez=geneEntrez))
   tab1
 }
 

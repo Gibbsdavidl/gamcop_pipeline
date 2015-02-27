@@ -63,9 +63,9 @@ for (day in 1:3) {
     # then take them all 
     idx <- bloodDrawDates > -100000
   } else if (day == 2) {
-    idx <- bloodDrawDates == 1
-  } else if (day == 3) {
     idx <- bloodDrawDates >= 0 & bloodDrawDates <= 4
+  } else if (day == 3) {
+    idx <- bloodDrawDates == 1
   }
   idx[is.na(idx)] <- F
   clinMatFilt <- clinMat[,idx]  
@@ -75,7 +75,7 @@ for (day in 1:3) {
       targetString <- str_split(ta, ":")[[1]][5]; print(targetString)
       deTable <- bootDiffFun(clinMat=clinMatFilt, dataMat=methMat, targetPheno=ta,
                       covarVec=covariates, FCThresh=0.001, pValueThresh=0.05,
-                      writingDir=outdir, reps=200, cpus=6) 
+                      writingDir=outdir, reps=1000, cpus=4) 
       geneTable <- mapToGenes(deTable = deTable, 1.010)
       ddd <- cbind(deTable, geneTable)
       foutstring <- str_join(outdir, targetString, ".txt", collapse = "")

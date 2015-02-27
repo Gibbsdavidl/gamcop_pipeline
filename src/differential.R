@@ -101,7 +101,8 @@ conf95 <- function(boot_table, i)
 {
   X <- mat.or.vec(nr=nrow(boot_table), nc=3)
   for (i in 1:nrow(boot_table)) {    
-    X[i,] <- quantile(boot_table[i,], c(0.025, 0.5, 0.975))  
+    ss <- omit.na(boot_table[i,])
+    X[i,] <- quantile(ss, c(0.025, 0.5, 0.975))  
   }
   X <- as.data.frame(X)
   colnames(X) <- c("Left", "Med", "Right") 
