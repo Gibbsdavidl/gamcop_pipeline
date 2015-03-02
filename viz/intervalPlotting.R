@@ -3,6 +3,7 @@
 # plotting some intervals.
 
 Preterm <- read.delim("/Volumes/StorageDisk/Meth_DF5/pipeline/DEs_Feb_27th/DE_blood_day_04/Preterm.txt", stringsAsFactors=FALSE)
+Idiop <- read.delim("/Volumes/StorageDisk/Meth_DF5/pipeline/DEs_Feb_27th/DE_blood_day_04/Inova_Idiopathic_NA.txt", stringsAsFactors=FALSE)
 
 
 drawInterval <- function(deTable, rowI, atitle) {
@@ -38,6 +39,8 @@ drawInterval <- function(deTable, rowI, atitle) {
 
   lines( c(bootM,bootM), c( -0.1, -0.8) ) 
   text( -bootM, -0.9, 'Median Bootstrap Adj. P-value' ) 
+  
+  points(x = 0, y=0, lwd=2, col="red")
   
 }
 
