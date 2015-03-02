@@ -7,6 +7,7 @@ source("../../../../src/gene_list_overlap.R")
 formatPval <- function(num){
   sprintf("%.2e", num)
 }
+
 add_date_tag <- function(stringToTag, fileExtension){
   today <- Sys.Date()
   todayf <- format(today, format="%Y%m%d")
@@ -36,6 +37,7 @@ perform_overlap_signficance_analysis <- function(listOfItemsToCompare, overlapSt
   return(overlapStats)
 }
 
+
 # Arguements
 # targetPhenotype: Description of Target Phenotype for which genes are differentially expressed
 # rna: List of Differentially Expressed Genes : characterVector
@@ -45,7 +47,8 @@ perform_overlap_signficance_analysis <- function(listOfItemsToCompare, overlapSt
 # writingDir: directory to write the results 
 
 get_de_genes_overlap <- function(rna, mir, meth, geneList, targetPhenotypeName, writingDir, rnaUniverse, 
-                                 mirUniverse, methUniverse){
+                                 mirUniverse, methUniverse, writeVenn=FALSE){
+  
   
   resultsTable <- data.frame( "GeneList1"=character(), "List1 " = integer(), "GeneList2"=character(), "List2" = integer(), 
                               "Universe"= integer(), "Expected" = integer(), "Actual" = integer(), "Pval_F"=numeric(), "Pval_O"=numeric(), "HyperP"=numeric(), stringsAsFactors=FALSE)
@@ -53,22 +56,20 @@ get_de_genes_overlap <- function(rna, mir, meth, geneList, targetPhenotypeName, 
   # pairwise comparisons between molecular data types
   if(!is.null(rna) & !is.null(mir)){
     universeGeneList <- intersect(rnaUniverse, mirUniverse)
-    universe <- length(universeGeneList)
     rnaUni <- rna[rna %in% universeGeneList]
     mirUni <- mir[mir %in% universeGeneList]
     compList <- list("mRNA_Expression"=rnaUni, "miRNA_Targets"=mirUni )
     resultsTable <- perform_overlap_signficance_analysis(compList, resultsTable, targetPhenotypeName = targetPhenotypeName, universeGeneList)
-    write_overlap_venn(targetPhenotypeName, compList, writingDir) 
+    if(writeVenn){write_overlap_venn(targetPhenotypeName, compList, writingDir)}
   }    
   
   if(!is.null(rna) & !is.null(meth)){
     universeGeneList <- intersect(rnaUniverse, methUniverse)
-    universe <- length(universeGeneList)
     rnaUni <- rna[rna %in% universeGeneList]
     methUni <- meth[meth %in% universeGeneList]
     compList <- list("mRNA_Expression"=rnaUni, "Methylation"=methUni)
     resultsTable <- perform_overlap_signficance_analysis(compList, resultsTable, targetPhenotypeName, universeGeneList)
-    write_overlap_venn(targetPhenotypeName, compList, writingDir) 
+    if(writeVenn){write_overlap_venn(targetPhenotypeName, compList, writingDir)}
   }
   
   if(!is.null(meth) & !is.null(mir)){
@@ -78,7 +79,7 @@ get_de_genes_overlap <- function(rna, mir, meth, geneList, targetPhenotypeName, 
     mirUni <- mir[mir %in% universeGeneList]
     compList <- list("Methylation"=methUni, "miRNA_Targets"=mirUni)
     resultsTable <- perform_overlap_signficance_analysis(compList, resultsTable, targetPhenotypeName, universeGeneList)
-    write_overlap_venn(targetPhenotypeName, compList, writingDir) 
+    if(writeVenn){write_overlap_venn(targetPhenotypeName, compList, writingDir)}
   }
   
   # pairwise comparisons between molecular data types and PTB Gene List
@@ -86,12 +87,11 @@ get_de_genes_overlap <- function(rna, mir, meth, geneList, targetPhenotypeName, 
   if(!is.null(rna) & !is.null(geneList)){
     #universeGeneList <- intersect(rnaUniverse, geneList)
     universeGeneList <- rnaUniverse
-    universe <- length(universeGeneList)
     rnaUni <- rna[rna %in% universeGeneList]
     geneListUni <- geneList[geneList %in% universeGeneList]
     compList <- list("mRNA_Expression"=rnaUni, "dbPTBGeneList"= geneListUni )
     resultsTable <- perform_overlap_signficance_analysis(compList, resultsTable, targetPhenotypeName, universeGeneList)
-    write_overlap_venn(targetPhenotypeName, compList, writingDir) 
+    if(writeVenn){write_overlap_venn(targetPhenotypeName, compList, writingDir)}
   }
   
   if(!is.null(mir) & !is.null(geneList)){
@@ -102,7 +102,7 @@ get_de_genes_overlap <- function(rna, mir, meth, geneList, targetPhenotypeName, 
     geneListUni <- geneList[geneList %in% universeGeneList]
     compList <- list("miRNA_Targets"=mirUni, "dbPTBGeneList"= geneListUni)
     resultsTable <- perform_overlap_signficance_analysis(compList, resultsTable, targetPhenotypeName, universeGeneList)
-    write_overlap_venn(targetPhenotypeName, compList, writingDir) 
+    if(writeVenn){write_overlap_venn(targetPhenotypeName, compList, writingDir)}
   }
   
   if(!is.null(meth) & !is.null(geneList)){
@@ -113,7 +113,7 @@ get_de_genes_overlap <- function(rna, mir, meth, geneList, targetPhenotypeName, 
     geneListUni <- geneList[geneList %in% universeGeneList]
     compList <- list("Methylation"=methUni, "dbPTBGeneList"= geneListUni )
     resultsTable <- perform_overlap_signficance_analysis(compList, resultsTable, targetPhenotypeName, universeGeneList)
-    write_overlap_venn(targetPhenotypeName, compList, writingDir) 
+    if(writeVenn){write_overlap_venn(targetPhenotypeName, compList, writingDir)}
   }
   
   filename <- add_date_tag(stringToTag = paste0("overlap_table_", targetPhenotypeName), fileExtension = ".txt")
