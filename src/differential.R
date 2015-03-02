@@ -20,7 +20,7 @@ differential <- function(designTable, dataMat, covarVec, writingDir, FCThresh, p
     
     # run limma
     fit1<-lmFit(FixedDataMatrix, designTable)
-    fit1<-eBayes(fit1)
+    fit1<-eBayes(fit1, robust=TRUE)
     
     #gather relevant covariates
     cov_length = length(covarVec)+2

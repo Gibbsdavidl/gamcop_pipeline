@@ -18,6 +18,7 @@ source("src/gene_list_overlap.R")
 setwd("/Volumes/StorageDisk/Meth_DF5/pipeline")
 # Clinical data file
 clinMat <- readFeatureMatrix("basis/data_CLIN_20150203.fm")
+#clinMat <- readFeatureMatrix("basis/2015_02_25_clinical_genomic_admx_allBlood_hilevel.fm")
 #methMat <- readFeatureMatrix("products/data_METH_20140129_norm_filtered_outlier_logit_admix_limma.fm")
 load(file="/Volumes/StorageDisk/Meth_DF5/pipeline/methmat_feb_9.rda")
 #batchMat <- read.csv("/Volumes/StorageDisk/Meth_DF5/pipeline/basis/DF5_Methylation_Batches.csv", stringsAsFactors=FALSE)
@@ -34,12 +35,6 @@ bloodDrawDates <- as.numeric(clinMat["N:M:CLIN:Data:Date_of_Blood_Collection__re
 #clinMat <- clinMat[,idx]
 #######################################################################################################################
 
-#covariates <- c("N:M:SURV:Data:Date_of_Birth__relative_to_Date_of_Birth", 
-#                "C:M:ADMX:Data:Admix_80_Percent")
-
-covariates <- c("N:M:SURV:Data:Date_of_Birth__relative_to_Date_of_Birth", 
-                "C:M:ADMX:Data:Admix_80_Percent",
-                "N:M:CLIN:Data:Date_of_Blood_Collection__relative_to_Date_of_Birth")
 
 targets <- c(
 "B:NB:CLIN:Critical_Phenotype:Preterm",
@@ -58,14 +53,24 @@ dirs <- c("/Volumes/StorageDisk/Meth_DF5/pipeline/DE_blood_all_days/",
           "/Volumes/StorageDisk/Meth_DF5/pipeline/DE_blood_day_04/",
           "/Volumes/StorageDisk/Meth_DF5/pipeline/DE_blood_day_1/")
 
+dayString <- c("AllDays", "04Days", "1Days")
+
 for (day in 1:3) {
   if (day == 1) {
     # then take them all 
     idx <- bloodDrawDates > -100000
+    covariates <- c("N:M:SURV:Data:Date_of_Birth__relative_to_Date_of_Birth", 
+                    "C:M:ADMX:Data:Admix_80_Percent",
+                    "N:M:CLIN:Data:Date_of_Blood_Collection__relative_to_Date_of_Birth")
   } else if (day == 2) {
     idx <- bloodDrawDates >= 0 & bloodDrawDates <= 4
+    covariates <- c("N:M:SURV:Data:Date_of_Birth__relative_to_Date_of_Birth", 
+                    "C:M:ADMX:Data:Admix_80_Percent",
+                    "N:M:CLIN:Data:Date_of_Blood_Collection__relative_to_Date_of_Birth")
   } else if (day == 3) {
     idx <- bloodDrawDates == 1
+    covariates <- c("N:M:SURV:Data:Date_of_Birth__relative_to_Date_of_Birth", 
+                    "C:M:ADMX:Data:Admix_80_Percent")
   }
   idx[is.na(idx)] <- F
   clinMatFilt <- clinMat[,idx]  
@@ -75,10 +80,10 @@ for (day in 1:3) {
       targetString <- str_split(ta, ":")[[1]][5]; print(targetString)
       deTable <- bootDiffFun(clinMat=clinMatFilt, dataMat=methMat, targetPheno=ta,
                       covarVec=covariates, FCThresh=0.001, pValueThresh=0.05,
-                      writingDir=outdir, reps=1000, cpus=4) 
+                      writingDir=outdir, reps=1000, cpus=6)
       geneTable <- mapToGenes(deTable = deTable, 1.010)
       ddd <- cbind(deTable, geneTable)
-      foutstring <- str_join(outdir, targetString, ".txt", collapse = "")
+      foutstring <- add_date_tag(str_join(outdir, "METH_DE_", dayString[day], "_", targetString), ".txt")
       write.table(ddd, quote=F, file=foutstring, sep="\t")
   }
 }
