@@ -106,7 +106,7 @@ diffExprFun <- function(clinMat, dataMat, targetPheno=NA, covarVec=NA, FCThresh=
 
 bootDiffFun <- function(clinMat, dataMat, targetPheno=NA, covarVec=NA, 
                         FCThresh=NA, pValueThresh=NA, writingDir="./", 
-                        reps=100, cpus=2)
+                        reps=100, cpus=2, writeTable=F)
 {
   # Assumes that:
   # clinMat and dataMat have the same column names, i.e. "101-479-M" .. R data.frame column names in are in place.
@@ -131,7 +131,7 @@ bootDiffFun <- function(clinMat, dataMat, targetPheno=NA, covarVec=NA,
   # Differential expression analysis ----------------------------------------
   
 #  topTable <- differential(design, dataMat, covarVec, writingDir)
-  topTable <- bootDiff(designTable, dataMat, covarVec, writingDir, 5, reps, cpus)
+  topTable <- bootDiff(designTable, dataMat, covarVec, writingDir, 5, reps, cpus, writeTable)
   print("Completed: Differential expression testing ")
   
   # Visualize results of differential expression analysis -------------------

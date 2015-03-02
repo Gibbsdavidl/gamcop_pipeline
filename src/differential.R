@@ -45,7 +45,7 @@ differential <- function(designTable, dataMat, covarVec, writingDir, FCThresh, p
 runLimma <- function(DataMatrix, designTable, covarVec)
 {  
   fit1<-lmFit(DataMatrix, designTable)
-  fit1<-eBayes(fit1)
+  fit1<-eBayes(fit1, robust=TRUE)
   
   #gather relevant covariates
   cov_length = length(covarVec)+2
@@ -72,7 +72,6 @@ bootLimmaStat <- function(FixedDataMatrix, CompleteTable, designTable, covarVec,
     sampleIdx <- sample(1:N, size=N, replace=T)
     SampledDataMatrix    <- FixedDataMatrix[,sampleIdx]
     SampledDesign        <- designTable[sampleIdx,]
-    SampledCovar         <- 
     SampledCompleteTable <- runLimma(SampledDataMatrix, SampledDesign, covarVec)
     SampledCompleteTable <- SampledCompleteTable[match(table = rownames(SampledCompleteTable), 
                                                      x = rownames(CompleteTable)),]
@@ -110,19 +109,21 @@ conf95 <- function(boot_table, i)
 }
 
 
-bootDiff <- function(designTable, dataMat, covarVec, writingDir, topTableCol=3, reps, cpus, ...){
+bootDiff <- function(designTable, dataMat, covarVec, writingDir, topTableCol=3, reps, cpus, writeTable, ...){
   require(limma)
   
   FixedDataMatrix<-dataMat[, colnames(dataMat) %in% rownames(designTable)]
   
   #create file name for data output
-  DataType       = strsplit(rownames(FixedDataMatrix)[1], split=":")[[1]][3]
-  targetPheno <- unlist(str_split(colnames(designTable)[ncol(designTable)], ":"))[[5]]  # last col of design
-  targetPheno <- str_replace_all(string = targetPheno, pattern = "`", replacement = "")
-  print(targetPheno)
-  OutputFile     = paste0("/DE_", DataType, "_", targetPheno)
-  OutputFileName = add_date_tag(OutputFile, ".txt")
-  OutputFile_dir = paste0(writingDir, OutputFileName)
+  if (writeTable) {
+    DataType       = strsplit(rownames(FixedDataMatrix)[1], split=":")[[1]][3]
+    targetPheno <- unlist(str_split(colnames(designTable)[ncol(designTable)], ":"))[[5]]  # last col of design
+    targetPheno <- str_replace_all(string = targetPheno, pattern = "`", replacement = "")
+    print(targetPheno)
+    OutputFile     = paste0("/DE_", DataType, "_", targetPheno)
+    OutputFileName = add_date_tag(OutputFile, ".txt")
+    OutputFile_dir = paste0(writingDir, OutputFileName)
+  }
   
   # make sure that the samples are the same in both the dataMatrix and design matrix
   CheckData<-table(colnames(FixedDataMatrix) %in% rownames(designTable))
