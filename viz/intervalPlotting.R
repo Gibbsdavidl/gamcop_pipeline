@@ -38,7 +38,7 @@ drawInterval <- function(deTable, rowI, atitle) {
   text( 0.05, 0.55, '5% Signif. Threshold' ) 
 
   lines( c(bootM,bootM), c( -0.1, -0.8) ) 
-  text( -bootM, -0.9, 'Median Bootstrap Adj. P-value' ) 
+  text( bootM, -0.9, 'Median Bootstrap Adj. P-value' ) 
   
   points(x = 0, y=0, lwd=2, col="red")
   
