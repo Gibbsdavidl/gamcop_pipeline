@@ -9,6 +9,12 @@ get_list_overlap_significance <- function(list1, list2, geneUniverse, species){
   return(getPval(go.obj))
 }
 
+get_list_overlap <- function(list1, list2, geneUniverse, species){
+  go.obj <- newGeneOverlap(listA=list1, listB = list2, genome.size=geneUniverse, spec=species)
+  go.obj <- testGeneOverlap(go.obj)
+  return(getIntersection(go.obj))
+}
+
 get_list_overlap_size <- function(list1, list2, geneUniverse, species){
   go.obj <- newGeneOverlap(listA=list1, listB = list2, genome.size=geneUniverse, spec=species)
   go.obj <- testGeneOverlap(go.obj)
