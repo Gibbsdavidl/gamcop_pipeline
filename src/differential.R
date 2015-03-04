@@ -1,4 +1,4 @@
-differential <- function(designTable, dataMat, covarVec, writingDir, FCThresh, pValueThresh,...){
+differential <- function(designTable, dataMat, covarVec, writingDir, robustFlag,...){
    require(limma)
   
   FixedDataMatrix<-dataMat[, colnames(dataMat) %in% rownames(designTable)]
@@ -19,9 +19,13 @@ differential <- function(designTable, dataMat, covarVec, writingDir, FCThresh, p
   if (length(CheckData) == 1 & names(CheckData)[1] == "TRUE"){
     
     # run limma
-    fit1<-lmFit(FixedDataMatrix, designTable)
-    fit1<-eBayes(fit1, robust=TRUE)
-    
+    if (robustFlag == T) {
+      fit1<-lmFit(FixedDataMatrix, designTable, method ="robust")
+      fit1<-eBayes(fit1, robust=T) 
+    } else {
+      fit1<-lmFit(FixedDataMatrix, designTable, method="ls")
+      fit1<-eBayes(fit1, robust=F)
+    }
     #gather relevant covariates
     cov_length = length(covarVec)+2
     DesignVariables  = dim(designTable)[2]
@@ -42,10 +46,15 @@ differential <- function(designTable, dataMat, covarVec, writingDir, FCThresh, p
 }
 
 
-runLimma <- function(DataMatrix, designTable, covarVec)
+runLimma <- function(DataMatrix, designTable, covarVec, robustFlag)
 {  
-  fit1<-lmFit(DataMatrix, designTable)
-  fit1<-eBayes(fit1, robust=TRUE)
+  if (robustFlag == T) {
+    fit1<-lmFit(FixedDataMatrix, designTable, method ="robust")
+    fit1<-eBayes(fit1, robust=T) 
+  } else {
+    fit1<-lmFit(FixedDataMatrix, designTable, method="ls")
+    fit1<-eBayes(fit1, robust=F)
+  }
   
   #gather relevant covariates
   cov_length = length(covarVec)+2
@@ -59,7 +68,7 @@ runLimma <- function(DataMatrix, designTable, covarVec)
 }
 
 
-bootLimmaStat <- function(FixedDataMatrix, CompleteTable, designTable, covarVec, j, repidx)
+bootLimmaStat <- function(FixedDataMatrix, CompleteTable, designTable, covarVec, j, repidx, robustFlag)
 {
   # i == which rep it is
   # j == index of : {logFC    AveExpr        t      P.Value    adj.P.Val        B}    
@@ -72,7 +81,7 @@ bootLimmaStat <- function(FixedDataMatrix, CompleteTable, designTable, covarVec,
     sampleIdx <- sample(1:N, size=N, replace=T)
     SampledDataMatrix    <- FixedDataMatrix[,sampleIdx]
     SampledDesign        <- designTable[sampleIdx,]
-    SampledCompleteTable <- runLimma(SampledDataMatrix, SampledDesign, covarVec)
+    SampledCompleteTable <- runLimma(SampledDataMatrix, SampledDesign, covarVec, robustFlag)
     SampledCompleteTable <- SampledCompleteTable[match(table = rownames(SampledCompleteTable), 
                                                      x = rownames(CompleteTable)),]
     X[,i] <- SampledCompleteTable[,j]
@@ -82,7 +91,7 @@ bootLimmaStat <- function(FixedDataMatrix, CompleteTable, designTable, covarVec,
 }
 
 
-runBootstrap <- function(FixedDataMatrix, CompleteTable, designTable, covarVec, cpus, j, reps)
+runBootstrap <- function(FixedDataMatrix, CompleteTable, designTable, covarVec, cpus, j, reps, robustFlag)
 {
   # run limma # 
   require(doParallel)
@@ -92,7 +101,7 @@ runBootstrap <- function(FixedDataMatrix, CompleteTable, designTable, covarVec, 
   xlist <- split(1:reps, 1:cpus)
   foreach(i=1:cpus, .combine='cbind') %dopar% bootLimmaStat(FixedDataMatrix, CompleteTable, 
                                                             designTable, covarVec, 
-                                                            j, xlist[[i]])
+                                                            j, xlist[[i]], robustFlag)
 }
 
 
@@ -109,7 +118,7 @@ conf95 <- function(boot_table, i)
 }
 
 
-bootDiff <- function(designTable, dataMat, covarVec, writingDir, topTableCol=3, reps, cpus, writeTable, ...){
+bootDiff <- function(designTable, dataMat, covarVec, writingDir, topTableCol=3, reps, cpus, writeTable, robustFlag,...){
   require(limma)
   
   FixedDataMatrix<-dataMat[, colnames(dataMat) %in% rownames(designTable)]
@@ -129,8 +138,8 @@ bootDiff <- function(designTable, dataMat, covarVec, writingDir, topTableCol=3, 
   CheckData<-table(colnames(FixedDataMatrix) %in% rownames(designTable))
   
   if (length(CheckData) == 1 & names(CheckData)[1] == "TRUE"){  
-    Complete_table <- runLimma(FixedDataMatrix, designTable, covarVec)
-    Boot_table <- runBootstrap(FixedDataMatrix, Complete_table, designTable, covarVec, cpus, topTableCol, reps)
+    Complete_table <- runLimma(FixedDataMatrix, designTable, covarVec,robustFlag)
+    Boot_table <- runBootstrap(FixedDataMatrix, Complete_table, designTable, covarVec, cpus, topTableCol, reps,robustFlag)
     confInts <- conf95(Boot_table)
     SuperComplete <- cbind(Complete_table, confInts)
     write.table(SuperComplete, file=OutputFile_dir, quote = F, row.names = T)

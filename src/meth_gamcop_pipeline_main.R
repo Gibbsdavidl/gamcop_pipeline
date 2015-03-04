@@ -18,7 +18,8 @@ source("src/gene_list_overlap.R")
 setwd("/Volumes/StorageDisk/Meth_DF5/pipeline")
 # Clinical data file
 clinMat <- readFeatureMatrix("basis/data_CLIN_20150203.fm")
-#clinMat <- readFeatureMatrix("basis/2015_02_25_clinical_genomic_admx_allBlood_hilevel.fm")
+clinMat2 <- readFeatureMatrix("basis/data_CLIN_20150303.fm")
+clinMat2 <- clinMat2[,colnames(clinMat2) %in% colnames(clinMat)]
 #methMat <- readFeatureMatrix("products/data_METH_20140129_norm_filtered_outlier_logit_admix_limma.fm")
 load(file="/Volumes/StorageDisk/Meth_DF5/pipeline/methmat_feb_9.rda")
 #batchMat <- read.csv("/Volumes/StorageDisk/Meth_DF5/pipeline/basis/DF5_Methylation_Batches.csv", stringsAsFactors=FALSE)
@@ -29,12 +30,20 @@ load(file="/Volumes/StorageDisk/Meth_DF5/pipeline/methmat_feb_9.rda")
 idx <- grep(rownames(clinMat), pattern = "Preec")
 rownames(clinMat)[idx] <- "B:M:CLIN:Critical_Phenotype:Preeclampsia_Eclampsia"
 bloodDrawDates <- as.numeric(clinMat["N:M:CLIN:Data:Date_of_Blood_Collection__relative_to_Date_of_Birth", ])
+
+idx <- grep(rownames(clinMat2), pattern = "Preec")
+rownames(clinMat2)[idx] <- "B:M:CLIN:Critical_Phenotype:Preeclampsia_Eclampsia"
+bloodDrawDates2 <- as.numeric(clinMat2["N:M:CLIN:Data:Date_of_Blood_Collection_20150223__relative_to_Date_of_Birth", ])
+
 #idx <- bloodDrawDates == 1
 #idx <- bloodDrawDates >= 0 & bloodDrawDates <= 4
 #idx[is.na(idx)] <- F
 #clinMat <- clinMat[,idx]
 #######################################################################################################################
 
+clinMatOrig <- clinMat
+clinMatNew  <- clinMat2
+clinMat <- clinMat2
 
 targets <- c(
 "B:NB:CLIN:Critical_Phenotype:Preterm",
@@ -49,11 +58,12 @@ targets <- c(
 "B:M:CLIN:Critical_Phenotype:Preeclampsia_Eclampsia",
 "B:NB:MRGE:Critical_Phenotype:Uterine_Related")
 
-dirs <- c("/Volumes/StorageDisk/Meth_DF5/pipeline/DE_blood_all_days/",
-          "/Volumes/StorageDisk/Meth_DF5/pipeline/DE_blood_day_04/",
-          "/Volumes/StorageDisk/Meth_DF5/pipeline/DE_blood_day_1/")
+dirs <- c("/Volumes/StorageDisk/Meth_DF5/pipeline/update_DE_blood_all_days/",
+          "/Volumes/StorageDisk/Meth_DF5/pipeline/update_DE_blood_day_04/",
+          "/Volumes/StorageDisk/Meth_DF5/pipeline/update_DE_blood_day_1/")
 
 dayString <- c("AllDays", "04Days", "1Days")
+
 
 for (day in 1:3) {
   if (day == 1) {
@@ -78,9 +88,21 @@ for (day in 1:3) {
   
     for (ta in targets) {
       targetString <- str_split(ta, ":")[[1]][5]; print(targetString)
-      deTable <- bootDiffFun(clinMat=clinMatFilt, dataMat=methMat, targetPheno=ta,
-                      covarVec=covariates, FCThresh=0.001, pValueThresh=0.05,
-                      writingDir=outdir, reps=1000, cpus=6)
+      #deTable <- bootDiffFun(clinMat=clinMatFilt, dataMat=methMat, targetPheno=ta,
+      #                covarVec=covariates, FCThresh=0.001, pValueThresh=0.05,
+      #                writingDir=outdir, reps=1000, cpus=6, robustFlag=T)
+      deTable <- diffExprFun(clinMat=clinMatFilt, dataMat=methMat, targetPheno=ta,
+                             covarVec=covariates, FCThresh=0.001, pValueThresh=0.05,
+                             writingDir=outdir, robustFlag=T)
+      print("*****************")
+      print(targetString)
+      print(sum(clinMat[ta,] == "true"))
+      print(sum(clinMat[ta,] == "false"))
+      print(ncol(clinMat[ta,]))
+      print(sum(clinMat[ta,] == "true")/ncol(clinMat[ta,]))
+      print(sum(deTable$adj.P.Val < 0.05))
+      print("*****************")
+      
       geneTable <- mapToGenes(deTable = deTable, 1.010)
       ddd <- cbind(deTable, geneTable)
       foutstring <- add_date_tag(str_join(outdir, "METH_DE_", dayString[day], "_", targetString), ".txt")
