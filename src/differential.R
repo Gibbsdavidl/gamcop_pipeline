@@ -46,7 +46,7 @@ differential <- function(designTable, dataMat, covarVec, writingDir, robustFlag,
 }
 
 
-runLimma <- function(DataMatrix, designTable, covarVec, robustFlag)
+runLimma <- function(FixedDataMatrix, designTable, covarVec, robustFlag)
 {  
   if (robustFlag == T) {
     fit1<-lmFit(FixedDataMatrix, designTable, method ="robust")

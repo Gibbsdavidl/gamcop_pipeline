@@ -46,7 +46,8 @@ visualize_diff_exp <- function(clinMat, dataMat, topTable, topk=1, targetPheno,
     # Create ggplot2 input data
     for(gene in diffExpGenes[1:minTopFeatures]){
       geneOfInterest <- gene
-      geneExpressionLevel <- as.data.frame(t(dataMat[geneOfInterest,]))
+#      geneExpressionLevel <- as.data.frame(t(dataMat[geneOfInterest,]))
+      geneExpressionLevel <- as.data.frame(dataMat[geneOfInterest,])
       classTable <- as.data.frame(clinMat[,targetPheno], row.names = row.names(clinMat))
       dat.obj <- nyMerge(classTable, geneExpressionLevel)
       expression_by_phenotype_boxplots(dat.obj, unlist(str_split(geneOfInterest, ":"))[[5]], phenotypeName, dataSource, writingDir)
