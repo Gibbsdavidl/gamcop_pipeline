@@ -35,9 +35,9 @@ bloodDrawDates <- as.numeric(clinMat[bloodVar, ])
 
 targets <- rownames(clinMat)[grep(pattern="Critical_Phenotype", rownames(clinMat))]
 
-dirs <- c("/Volumes/StorageDisk/Meth_DF5/pipeline/update_DE_blood_all_days/",
-          "/Volumes/StorageDisk/Meth_DF5/pipeline/update_DE_blood_day_04/",
-          "/Volumes/StorageDisk/Meth_DF5/pipeline/update_DE_blood_day_1/")
+dirs <- c("/Volumes/StorageDisk/Meth_DF5/pipeline/boot_DE_blood_all_days/",
+          "/Volumes/StorageDisk/Meth_DF5/pipeline/boot_DE_blood_day_04/",
+          "/Volumes/StorageDisk/Meth_DF5/pipeline/boot_DE_blood_day_1/")
 
 dayString <- c("AllDays", "04Days", "1Days")
 
@@ -66,12 +66,12 @@ for (day in 1:3) {
     for (ta in targets) {
       try({
         targetString <- str_split(ta, ":")[[1]][5]; print(targetString)
-        #deTable <- bootDiffFun(clinMat=clinMatFilt, dataMat=methMat, targetPheno=ta,
-        #                covarVec=covariates, FCThresh=0.001, pValueThresh=0.05,
-        #                writingDir=outdir, reps=1000, cpus=4, robustFlag=T)
-        deTable <- diffExprFun(clinMat=clinMatFilt, dataMat=methMat, targetPheno=ta,
-                               covarVec=covariates, FCThresh=0.001, pValueThresh=0.05,
-                               writingDir=outdir, robustFlag=T)
+        deTable <- bootDiffFun(clinMat=clinMatFilt, dataMat=methMat, targetPheno=ta,
+                         covarVec=covariates, FCThresh=0.001, pValueThresh=0.05,
+                          writingDir=outdir, reps=1000, cpus=6, robustFlag=T)
+        #deTable <- diffExprFun(clinMat=clinMatFilt, dataMat=methMat, targetPheno=ta,
+        #                       covarVec=covariates, FCThresh=0.001, pValueThresh=0.05,
+        #                       writingDir=outdir, robustFlag=T)
         print("*****************")
         print(day)
         print(targetString)
