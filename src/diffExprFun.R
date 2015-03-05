@@ -107,7 +107,7 @@ diffExprFun <- function(clinMat, dataMat, targetPheno=NA, covarVec=NA,
 
 bootDiffFun <- function(clinMat, dataMat, targetPheno=NA, covarVec=NA, 
                         FCThresh=NA, pValueThresh=NA, writingDir="./", 
-                        reps=100, cpus=2, writeTable=F, robustFlag=T)
+                        reps=100, cpus=2, writeTable=T, robustFlag=T)
 {
   # Assumes that:
   # clinMat and dataMat have the same column names, i.e. "101-479-M" .. R data.frame column names in are in place.
