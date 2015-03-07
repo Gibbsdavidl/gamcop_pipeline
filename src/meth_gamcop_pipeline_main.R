@@ -66,9 +66,14 @@ for (day in 1:3) {
     for (ta in targets) {
       try({
         targetString <- str_split(ta, ":")[[1]][5]; print(targetString)
-        deTable <- bootDiffFun(clinMat=clinMatFilt, dataMat=methMat, targetPheno=ta,
-                         covarVec=covariates, FCThresh=0.001, pValueThresh=0.05,
-                          writingDir=outdir, reps=1000, cpus=6, robustFlag=T)
+        #Rprof("boot_profile.out")
+        Rprof("boot_reg_profile.out")
+        system.time(deTable <- bootDiffFun(clinMat=clinMatFilt, dataMat=methMat, targetPheno=ta,
+                                covarVec=covariates, FCThresh=0.001, pValueThresh=0.05,
+                                writingDir=outdir, reps=10, cpus=4, robustFlag=F))
+        Rprof(NULL)
+        summaryRprof("boot_reg_profile.out")
+        proftable("boot_reg_profile.out")
         #deTable <- diffExprFun(clinMat=clinMatFilt, dataMat=methMat, targetPheno=ta,
         #                       covarVec=covariates, FCThresh=0.001, pValueThresh=0.05,
         #                       writingDir=outdir, robustFlag=T)
