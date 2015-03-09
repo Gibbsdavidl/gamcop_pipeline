@@ -4,7 +4,7 @@
 
 #plot for visualizing Overlapping data in a starburst plot
 #include a list of p-values and logFC. 
-#uses output generated from the "DE_gene_overlap.R" function
+#uses output generated from the "Gene_level_overlap.R" function
 #generate list in the following manner: list(RNA=c(logFC_cutoff, Pvalue_cutoff), Meth=c(logFC_cutoff, Pvalue_cutoff))
 ##############
 #
