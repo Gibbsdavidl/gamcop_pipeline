@@ -5,16 +5,6 @@
 require(ggplot2) || stop("Could not load package 'ggplot2'")
 require(reshape2)|| stop("Could not load package 'reshape2'")
 require(stringr) || stop("Could not load package 'stringr'")
-# very annoying everytime I try to merge df1, df2 by row names have to constantly replace the rownames
-# merge df1 and df2 and keep the rownames the same
-# only produce output for those rows that could be merged
-nyMerge <- function(df1, df2){
-  #stopifnot(is.data.frame(df1), is.data.frame(df2))
-  merged_df <- merge(df1, df2, by=0)
-  row.names(merged_df) <- merged_df$Row.names
-  merged_df <- merged_df[,-1]
-  return(merged_df)
-}
 
 # Inputs
 # topTable - the full table that results from differential expression analysis
@@ -22,7 +12,7 @@ nyMerge <- function(df1, df2){
 # targetPheno - phenotype for comparison
 # FCThresh  - fold change threshold 
 # inputs passed from main function: dataMat, targetPheno, FCThresh, pValueThresh, writingDir
-visualize_diff_exp <- function(clinMat, dataMat, topTable, topk=1, targetPheno, 
+visualize_diff_exp_dlg <- function(clinMat, dataMat, topTable, topk=1, targetPheno, 
                                FCThresh, pValueThresh, writingDir){
   # Human readable phenotype name
   phenotypeName <- unlist(str_split(targetPheno, ":"))[[5]]
@@ -46,10 +36,9 @@ visualize_diff_exp <- function(clinMat, dataMat, topTable, topk=1, targetPheno,
     # Create ggplot2 input data
     for(gene in diffExpGenes[1:minTopFeatures]){
       geneOfInterest <- gene
-#      geneExpressionLevel <- as.data.frame(t(dataMat[geneOfInterest,]))
-      geneExpressionLevel <- as.data.frame(dataMat[geneOfInterest,])
-      classTable <- as.data.frame(clinMat[,targetPheno], row.names = row.names(clinMat))
-      dat.obj <- nyMerge(classTable, geneExpressionLevel)
+      geneExpressionLevel <- data.frame(Expr=as.numeric(dataMat[geneOfInterest,]))
+      classTable <- data.frame(Pheno = as.character(clinMat[targetPheno,]))
+      dat.obj <- cbind(classTable, geneExpressionLevel)
       expression_by_phenotype_boxplots(dat.obj, unlist(str_split(geneOfInterest, ":"))[[5]], phenotypeName, dataSource, writingDir)
     }
     # @TODO 

@@ -68,7 +68,8 @@ diffExprErrorCheck <- function(clinMat, dataMat, targetPheno=NA, covarVec=NA,
   itemsToReturn
 }
 
-diffExprFun <- function(clinMat, dataMat, targetPheno=NA, covarVec=NA, FCThresh=NA, pValueThresh=NA, writingDir="./") 
+diffExprFun <- function(clinMat, dataMat, targetPheno=NA, covarVec=NA, 
+                        FCThresh=NA, pValueThresh=NA, writingDir="./", robustFlag=T) 
 {
   # Assumes that:
   # clinMat and dataMat have the same column names, i.e. "101-479-M" .. R data.frame column names in are in place.
@@ -92,7 +93,7 @@ diffExprFun <- function(clinMat, dataMat, targetPheno=NA, covarVec=NA, FCThresh=
   print("Completed: Input error check ")
   # Differential expression analysis ----------------------------------------
   
-  topTable <- differential(designTable, dataMat, covarVec, writingDir)
+  topTable <- differential(designTable, dataMat, covarVec, writingDir, robustFlag)
   print("Completed: Differential expression testing ")
   
   # Visualize results of differential expression analysis -------------------
@@ -106,7 +107,7 @@ diffExprFun <- function(clinMat, dataMat, targetPheno=NA, covarVec=NA, FCThresh=
 
 bootDiffFun <- function(clinMat, dataMat, targetPheno=NA, covarVec=NA, 
                         FCThresh=NA, pValueThresh=NA, writingDir="./", 
-                        reps=100, cpus=2, writeTable=F)
+                        reps=100, cpus=2, writeTable=T, robustFlag=T)
 {
   # Assumes that:
   # clinMat and dataMat have the same column names, i.e. "101-479-M" .. R data.frame column names in are in place.
@@ -131,7 +132,7 @@ bootDiffFun <- function(clinMat, dataMat, targetPheno=NA, covarVec=NA,
   # Differential expression analysis ----------------------------------------
   
 #  topTable <- differential(design, dataMat, covarVec, writingDir)
-  topTable <- bootDiff(designTable, dataMat, covarVec, writingDir, 5, reps, cpus, writeTable)
+  topTable <- bootDiff(designTable, dataMat, covarVec, writingDir, 5, reps, cpus, writeTable, robustFlag)
   print("Completed: Differential expression testing ")
   
   # Visualize results of differential expression analysis -------------------
