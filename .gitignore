@@ -1,4 +1,14 @@
 .Rproj.user
 .Rhistory
 .RData
-.Rproj*
+*.Rproj
+.DS_Store
+results/*
+test-data/*
+data/*
+.test-venn*
+.gitignore
+src/expression_variation.R
+src/gene_ontology_analysis.R
+overview_gamcop_pipeline.graphml
+overview_gamcop_pipeline.pdf
