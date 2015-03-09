@@ -89,12 +89,14 @@ for (day in 1:3) {
     idx <- bloodDrawDates > -100000
     covariates <- c("N:M:SURV:Data:Date_of_Birth__relative_to_Date_of_Birth", 
                     "C:M:ADMX:Data:Admix_80_Percent",
-                    "N:M:CLIN:Data:Date_of_Blood_Collection__relative_to_Date_of_Birth")
+                    #"N:M:CLIN:Data:Date_of_Blood_Collection__relative_to_Date_of_Birth"
+                    "N:M:CLIN:Data:Date_of_Blood_Collection_20150223__relative_to_Date_of_Birth")
   } else if (day == 2) {
     idx <- bloodDrawDates >= 0 & bloodDrawDates <= 4
     covariates <- c("N:M:SURV:Data:Date_of_Birth__relative_to_Date_of_Birth", 
                     "C:M:ADMX:Data:Admix_80_Percent",
-                    "N:M:CLIN:Data:Date_of_Blood_Collection__relative_to_Date_of_Birth")
+                    #"N:M:CLIN:Data:Date_of_Blood_Collection__relative_to_Date_of_Birth"
+                    "N:M:CLIN:Data:Date_of_Blood_Collection_20150223__relative_to_Date_of_Birth")
   } else if (day == 3) {
     idx <- bloodDrawDates == 1
     covariates <- c("N:M:SURV:Data:Date_of_Birth__relative_to_Date_of_Birth", 
