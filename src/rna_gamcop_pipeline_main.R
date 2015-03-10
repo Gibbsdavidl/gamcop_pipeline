@@ -110,6 +110,6 @@ for (day in 1:3) {
     print("*****************")
     
     foutstring <- add_date_tag(str_join(outdir, "/DE_RNA_", dayString[day], "_", targetString, "_val_targets"), ".txt")
-    write.table(geneTable, quote=F, file=foutstring, sep="\t")
+    write.table(deTable, quote=F, file=foutstring, sep="\t")
   }
 }
