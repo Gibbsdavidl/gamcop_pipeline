@@ -12,7 +12,7 @@ differential <- function(designTable, dataMat, covarVec, writingDir, robustFlag,
   OutputFile     = paste0("/DE_", DataType, "_", targetPheno)
   OutputFileName = add_date_tag(OutputFile, ".txt")
   OutputFile_dir = paste0(writingDir, OutputFileName)
-  
+   
   # make sure that the samples are the same in both the dataMatrix and designTable matrix
   CheckData<-table(colnames(FixedDataMatrix) %in% rownames(designTable))
   
@@ -62,7 +62,7 @@ runLimma <- function(FixedDataMatrix, designTable, covarVec, robustFlag)
   Coef_of_Interest = paste(cov_length, DesignVariables, sep=":")
   
   #Write and Return Table of DE/M variables and the corresponding statistics
-  print(cov_length:DesignVariables)
+  #print(cov_length:DesignVariables)
   Complete_table<-topTable(fit1, n=Inf, coef= cov_length:DesignVariables)
   Complete_table
 }
@@ -142,7 +142,10 @@ bootDiff <- function(designTable, dataMat, covarVec, writingDir, topTableCol=3, 
     Boot_table <- runBootstrap(FixedDataMatrix, Complete_table, designTable, covarVec, cpus, topTableCol, reps,robustFlag)
     confInts <- conf95(Boot_table)
     SuperComplete <- cbind(Complete_table, confInts)
-    write.table(SuperComplete, file=OutputFile_dir, quote = F, row.names = T)
+    if (writeTable){
+      write.table(SuperComplete, file=OutputFile_dir, quote = F, row.names = T)
+      print("hello")
+    }
     return(SuperComplete)
   }
   
@@ -158,5 +161,3 @@ add_date_tag <- function(stringToTag, fileExtension){
     todayf <- format(today, format="%Y%m%d")
     return(paste(stringToTag, "_", todayf, sep = "", fileExtension))
 }
-      
-    
